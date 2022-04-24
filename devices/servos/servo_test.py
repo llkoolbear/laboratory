@@ -20,7 +20,6 @@ import servo
 
 servo1 = servo.Servo(11)
 sine = [180*math.sin(math.pi*n/100) for n in range(100)]
-print(sine)
 
 try:
   while True:
