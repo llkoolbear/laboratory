@@ -14,37 +14,18 @@
 #
 # ===============================================================================
 
+import math
 import time
 import servo
 
 servo1 = servo.Servo(11)
+sine = [270*sine(math.pi*n/100) for n in range(100)]
 
 try:
   while True:
-    servo1.set_angle(45)
-    time.sleep(0.5)
-    servo1.set_angle(90)
-    time.sleep(0.5)
-    servo1.set_angle(135)
-    time.sleep(0.5)
-    servo1.set_angle(180)
-    time.sleep(0.5)
-    servo1.set_angle(225)
-    time.sleep(0.5)
-    servo1.set_angle(270)
-    time.sleep(0.5)
-    servo1.set_angle(225)
-    time.sleep(0.5)
-    servo1.set_angle(180)
-    time.sleep(0.5)
-    servo1.set_angle(135)
-    time.sleep(0.5)
-    servo1.set_angle(90)
-    time.sleep(0.5)
-    servo1.set_angle(45)
-    time.sleep(0.5)
-    servo1.set_angle(0)
-    time.sleep(0.5)
+    for n in sine:
+        servo1.set_angle(n)
+        time.sleep(0.1)
 
 except KeyboardInterrupt:
   servo1.stop_servo()
