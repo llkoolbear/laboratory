@@ -17,7 +17,7 @@
 import time
 import servo
 
-servo1 = servo.Servo(17)
+servo1 = servo.Servo(11)
 
 try:
   while True:
