@@ -39,5 +39,8 @@ except KeyboardInterrupt:
 
 finally:
     servo1.set_angle(0)
+    time.sleep(0.02)
     servo1.stop_servo()
+    time.sleep(0.02)
+
     print('shutdown properly')
