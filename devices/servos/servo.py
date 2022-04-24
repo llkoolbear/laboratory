@@ -15,6 +15,7 @@
 # ===============================================================================
 
 import RPi.GPIO as GPIO
+import time
 from collections import namedtuple
 
 ServoAttributes = namedtuple('ServoAttributes',
@@ -30,10 +31,11 @@ SERVO_ATTRIBUTES = {
 
 class Servo():
 
-    def __init__(self, pin, freq = 50, model = 'DS3225'):
+    def __init__(self, pin, freq = 50, delay = 0.02, model = 'DS3225'):
         
         self.pin = pin # GPIO pin on the Raspberry Pi refer to Board (#) not BCM GPIO#
         self.freq = freq
+        self.delay = delay
         self.model = model
         self.attributes = SERVO_ATTRIBUTES[self.model]
 
@@ -67,7 +69,9 @@ class Servo():
         self.angle = angle
         self.duty_cycle = self.angle/self.attributes.max_angle*(self.max_duty_cycle-self.min_duty_cycle)+self.min_duty_cycle
         self.pwm.ChangeDutyCycle(self.duty_cycle)
+        time.sleep(self.delay)
 
     def stop_servo(self):
         self.pwm.stop()
         GPIO.cleanup()
+        time.sleep(self.delay)

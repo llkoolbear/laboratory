@@ -26,21 +26,18 @@ try:
   while True:
     for n in sine:
         servo1.set_angle(n)
-        time.sleep(0.04)
-    for n in sine:
-        servo1.set_angle(n)
-        time.sleep(0.03)
-    for n in sine:
-        servo1.set_angle(n)
         time.sleep(0.02)
+    for n in sine:
+        servo1.set_angle(n)
+        time.sleep(0.01)
+    for n in sine:
+        servo1.set_angle(n)
 
 except KeyboardInterrupt:
     pass
 
 finally:
     servo1.set_angle(0)
-    time.sleep(0.01)
     servo1.stop_servo()
-    time.sleep(0.01)
 
     print('shutdown properly')
