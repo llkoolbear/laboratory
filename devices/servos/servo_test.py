@@ -18,7 +18,7 @@ import math
 import time
 import servo
 
-servo1 = servo.Servo(11)
+servo1 = servo.Servo(11,100)
 sine = [round(180*math.sin(math.pi*n/100)) for n in range(100)]
 
 try:
