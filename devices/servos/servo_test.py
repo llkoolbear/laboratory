@@ -26,7 +26,7 @@ try:
   while True:
     for n in sine:
         servo1.set_angle(n)
-        time.sleep(0.005)
+        time.sleep(0.01)
 
 except KeyboardInterrupt:
     servo1.set_angle(0)
