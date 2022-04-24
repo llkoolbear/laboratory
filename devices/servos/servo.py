@@ -31,10 +31,20 @@ SERVO_ATTRIBUTES = {
 class Servo():
 
     def __init__(self, pin, freq = 50, model = 'DS3225'):
+        
         self.pin = pin # GPIO pin on the Raspberry Pi refer to Board (#) not BCM GPIO#
         self.freq = freq
         self.model = model
         self.attributes = SERVO_ATTRIBUTES[self.model]
+
+        if not isinstance(freq, (int,float)):
+            err_str = f'"{freq}" not a valid frequency! (usage:int|float)'
+            raise RuntimeError(err_str) 
+
+        if freq < self.attributes.min_freq or freq > self.attributes.max_freq:
+            err_str = f"{freq} degrees out of range! ({self.attributes.min_freq} to {self.attributes.max_freq} degrees)"
+            raise RuntimeError(err_str)
+
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.pin, GPIO.OUT)
         self.pwm = GPIO.PWM(self.pin, self.freq)

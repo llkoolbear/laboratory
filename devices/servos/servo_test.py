@@ -19,7 +19,8 @@ import time
 import servo
 
 servo1 = servo.Servo(11,100)
-sine = [round(180*math.sin(math.pi*n/100)) for n in range(100)]
+steps = 20
+sine = [round(180*math.sin(math.pi*n/steps)) for n in range(steps)]
 
 try:
   while True:
