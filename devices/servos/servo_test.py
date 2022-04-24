@@ -21,7 +21,7 @@ import servo
 servo1 = servo.Servo(11,50)
 steps = 100
 sine = [round(270*(math.cos(2*math.pi*n/(steps-1)+math.pi)+1)/2) for n in range(steps)]
-print(sine)
+
 try:
   while True:
     for n in sine:
@@ -36,6 +36,8 @@ try:
 
 except KeyboardInterrupt:
     pass
+
 finally:
     servo1.set_angle(0)
     servo1.stop_servo()
+    print('shutdown properly')

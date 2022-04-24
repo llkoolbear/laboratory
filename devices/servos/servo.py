@@ -66,7 +66,6 @@ class Servo():
 
         self.angle = angle
         self.duty_cycle = self.angle/self.attributes.max_angle*(self.max_duty_cycle-self.min_duty_cycle)+self.min_duty_cycle
-        print(self.duty_cycle)
         self.pwm.ChangeDutyCycle(self.duty_cycle)
 
     def stop_servo(self):
