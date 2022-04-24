@@ -18,7 +18,7 @@ import math
 import time
 import servo
 
-servo1 = servo.Servo(11,200)
+servo1 = servo.Servo(11,50)
 steps = 100
 sine = [round(270*(math.cos(2*math.pi*n/(steps-1)+math.pi)+1)/2) for n in range(steps)]
 print(sine)
@@ -30,12 +30,6 @@ try:
     for n in sine:
         servo1.set_angle(n)
         time.sleep(0.02)
-    for n in sine:
-        servo1.set_angle(n)
-        time.sleep(0.01)
-    for n in sine:
-        servo1.set_angle(n)
-        time.sleep(0.005)
 
 except KeyboardInterrupt:
     servo1.set_angle(0)
