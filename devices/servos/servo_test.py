@@ -26,7 +26,7 @@ try:
   while True:
     for n in sine:
         servo1.set_angle(n)
-        time.sleep(0.04)
+        time.sleep(0.03)
     for n in sine:
         servo1.set_angle(n)
         time.sleep(0.02)
