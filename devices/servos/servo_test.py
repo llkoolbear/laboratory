@@ -29,6 +29,9 @@ try:
         time.sleep(0.04)
     for n in sine:
         servo1.set_angle(n)
+        time.sleep(0.03)
+    for n in sine:
+        servo1.set_angle(n)
         time.sleep(0.02)
 
 except KeyboardInterrupt:
