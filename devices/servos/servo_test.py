@@ -19,14 +19,14 @@ import time
 import servo
 
 servo1 = servo.Servo(11,100)
-steps = 20
+steps = 100
 sine = [round(180*math.sin(math.pi*n/steps)) for n in range(steps)]
 
 try:
   while True:
     for n in sine:
         servo1.set_angle(n)
-        time.sleep(0.25)
+        time.sleep(0.02)
 
 except KeyboardInterrupt:
     servo1.set_angle(0)
