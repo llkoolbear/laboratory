@@ -16,9 +16,9 @@
 
 import math
 import time
-import servo
+from servo import Servo
 
-servo1 = servo.Servo(11,50)
+servo1 = Servo(11,50)
 steps = 100
 sine = [round(270*(math.cos(2*math.pi*n/(steps-1)+math.pi)+1)/2) for n in range(steps)]
 
