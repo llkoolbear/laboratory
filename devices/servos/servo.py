@@ -19,12 +19,12 @@ import time
 from collections import namedtuple
 
 ServoAttributes = namedtuple('ServoAttributes',
-                            'min_angle max_angle\
+                            'min_angle mid_angle max_angle\
                             min_freq max_freq\
                             min_pulse_width max_pulse_width')
 
 SERVO_ATTRIBUTES = {
-    'DS3225': ServoAttributes( 0, 270,              # Angle in Degrees
+    'DS3225': ServoAttributes( 0, 135, 270,         # Angle in Degrees
                                 50, 330,            # Frequency in Hz
                                 500e-6, 2500e-6)    # Pulse Width in Seconds
 }
@@ -73,5 +73,6 @@ class Servo():
 
     def stop_servo(self):
         self.pwm.stop()
+        time.sleep(self.delay)
         GPIO.cleanup()
         time.sleep(self.delay)
