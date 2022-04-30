@@ -34,14 +34,13 @@ STEPS = 100
 
 class Gimbal():
 
-
     def __init__(self, pan_pin, tilt_pin, max_pan=45, max_tilt=45):
         
         self.pan_pin = pan_pin # GPIO pin on the Raspberry Pi refer to Board (#) not BCM GPIO#
         self.tilt_pin = tilt_pin
         self.pan = servo.Servo(pan_pin)
         self.tilt = servo.Servo(tilt_pin)
-        self.attributes = GIMBAL_ATTRIBUTES[self.model]
+        #self.attributes = GIMBAL_ATTRIBUTES[self.model]
 
         if max_pan > self.pan.attributes.mid_angle:
             max_pan = self.pan.attributes.mid_angle
@@ -83,6 +82,7 @@ class Gimbal():
         self.x = x
         self.y = y
 
+    '''
     def pan_search(pan_cx, pan_cy):
         pan_cx = pan_cx + pan_move_x
         if pan_cx > pan_max_right:
@@ -93,7 +93,8 @@ class Gimbal():
         if debug:
             print(f"pan_search - at pan_cx={pan_cx} pan_cy={pan_cy}")
         return pan_cx, pan_cy
-
+    '''
+    
     def sine_search(self, speed):
         
         sine = [round(self.max_x*math.cos(2*math.pi*n/(STEPS-1)+math.pi)) for n in range(STEPS)]
