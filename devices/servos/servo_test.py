@@ -18,9 +18,12 @@ import math
 import time
 from servo import Servo
 
-servo1 = Servo(11,50)
-steps = 100
-sine = [round(270*(math.cos(2*math.pi*n/(steps-1)+math.pi)+1)/2) for n in range(steps)]
+SERVO_PIN = 11
+SERVO_FREQUENCY = 50
+STEPS = 100
+
+servo1 = Servo(SERVO_PIN,SERVO_FREQUENCY)
+sine = [round(servo1.attributes.max_angle*(math.cos(2*math.pi*n/(STEPS-1)+math.pi)+1)/2) for n in range(STEPS)]
 
 try:
   while True:
@@ -37,7 +40,7 @@ except KeyboardInterrupt:
     pass
 
 finally:
-    servo1.set_angle(0)
+    servo1.set_angle(servo1.attributes.max_angle/2)
     servo1.stop_servo()
 
     print('shutdown properly')

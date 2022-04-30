@@ -495,8 +495,8 @@ if __name__ == '__main__':
         print("User Pressed Keyboard ctrl-c")
     finally:
         print(f"Closing Servo pan_pin={pan_pin} and tilt_pin={tilt_pin}")
-        pan.stop_servo
-        tilt.stop_servo
+        pan.stop_servo()
+        tilt.stop_servo()
         print("")
         print(f"{progName} {ver} Exiting Program")
 
