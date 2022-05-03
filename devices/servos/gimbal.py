@@ -119,7 +119,7 @@ class Gimbal():
                 set_y = self.y+speed*self.tilt.delay*y_retard
             elif self.y > y:
                 set_y = self.y-speed*self.tilt.delay*y_retard
-
+            print(set_x, set_y)
             self.pan_goto(set_x, set_y)
 
     '''
