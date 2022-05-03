@@ -21,12 +21,16 @@ from collections import namedtuple
 ServoAttributes = namedtuple('ServoAttributes',
                             'min_angle mid_angle max_angle\
                             min_freq max_freq\
-                            min_pulse_width max_pulse_width')
+                            min_pulse_width max_pulse_width\
+                            min_step max_step\
+                            min_speed max_speed')
 
 SERVO_ATTRIBUTES = {
     'DS3225': ServoAttributes( 0, 135, 270,         # Angle in Degrees
                                 50, 330,            # Frequency in Hz
-                                500e-6, 2500e-6)    # Pulse Width in Seconds
+                                500e-6, 2500e-6,    # Pulse Width in Seconds
+                                1, 270,             # Degrees
+                                1, 400)             # Degrees per Second
 }
 
 class Servo():
@@ -70,6 +74,32 @@ class Servo():
         self.duty_cycle = self.angle/self.attributes.max_angle*(self.max_duty_cycle-self.min_duty_cycle)+self.min_duty_cycle
         self.pwm.ChangeDutyCycle(self.duty_cycle)
         time.sleep(self.delay)
+
+    def guide_to_angle(self, angle, speed):
+        
+        if not isinstance(angle, (int,float)):
+            err_str = f'"{angle}" not a valid angle! (usage:int|float)'
+            raise RuntimeError(err_str) 
+
+        if angle < self.attributes.min_angle or angle > self.attributes.max_angle:
+            err_str = f"{angle} degrees out of range! ({self.attributes.min_angle} to {self.attributes.max_angle} degrees)"
+            raise RuntimeError(err_str)
+
+        if not isinstance(speed, (int,float)):
+            err_str = f'"{speed}" not a valid angle! (usage:int|float)'
+            raise RuntimeError(err_str) 
+
+        if speed < self.attributes.min_speed or speed > self.attributes.max_speed:
+            err_str = f"{speed} degrees per second out of range! ({self.attributes.min_speed} to {self.attributes.max_speed} degrees per second)"
+            raise RuntimeError(err_str)
+
+        while self.angle != angle:
+            if abs(self.angle-angle) < speed*self.delay:
+                self.set_angle(angle)
+            elif self.angle < angle:
+                self.set_angle(self.angle+speed*self.delay)
+            elif self.angle > angle:
+                self.set_angle(self.angle-speed*self.delay)
 
     def stop_servo(self):
         self.pwm.stop()
