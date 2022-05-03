@@ -116,7 +116,7 @@ class Gimbal():
             if abs(self.y-y) < speed*self.tilt.delay*y_retard:
                 set_y = y
             elif self.y < y:
-                set_x = self.x+speed*self.tilt.delay*y_retard
+                set_y = self.y+speed*self.tilt.delay*y_retard
             elif self.y > y:
                 set_y = self.y-speed*self.tilt.delay*y_retard
 
