@@ -152,6 +152,7 @@ class Gimbal():
 
         try:
             while True:
+                print(self.min_x,self.max_x,self.min_y,self.max_y)
                 self.guide_to_position(self.min_x,self.max_y,speed)
                 time.sleep(1)
                 self.guide_to_position(self.max_x,self.max_y,speed)
