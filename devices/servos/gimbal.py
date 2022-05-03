@@ -14,7 +14,6 @@
 #
 # ===============================================================================
 
-from services.facetracker_bb import pan_goto
 import servo
 import time
 import math
