@@ -100,8 +100,6 @@ class Servo():
                 self.set_angle(self.angle+speed*self.delay)
             elif self.angle > angle:
                 self.set_angle(self.angle-speed*self.delay)
-        time.sleep(self.delay)
-
 
     def stop_servo(self):
         self.pwm.stop()
