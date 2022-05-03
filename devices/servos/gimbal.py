@@ -101,6 +101,9 @@ class Gimbal():
         elif abs(self.x-x) < abs(self.y-y):
             x_retard = abs((self.x-x)/(self.y-y))
             y_retard = 1
+        else:
+            x_retard = 1
+            y_retard = 1
 
         while self.x != x and self.y != y:
             if abs(self.x-x) < speed*self.pan.delay*x_retard:
@@ -117,7 +120,7 @@ class Gimbal():
             elif self.y > y:
                 set_y = self.y-speed*self.tilt.delay*y_retard
 
-            pan_goto(set_x, set_y)
+            self.pan_goto(set_x, set_y)
 
     '''
     def pan_search(pan_cx, pan_cy):
