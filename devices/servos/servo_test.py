@@ -45,6 +45,12 @@ try:
     servo1.guide_to_angle(0, 350)
     servo1.guide_to_angle(270, 400)
     servo1.guide_to_angle(0, 400)
+    servo1.set_angle(270)
+    time.sleep(1)
+    servo1.set_angle(0)
+    time.sleep(1)
+
+    servo1.set_angle(0)
 
 
 except KeyboardInterrupt:
