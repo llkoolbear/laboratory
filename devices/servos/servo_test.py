@@ -35,14 +35,6 @@ try:
         time.sleep(0.01)
     for n in sine:
         servo1.set_angle(n)
-    servo1.guide_to_angle(270, 400)
-    time.sleep(0.325)
-    servo1.guide_to_angle(0, 400)
-    time.sleep(0.325)
-    servo1.set_angle(270)
-    time.sleep(1)
-    servo1.set_angle(0)
-    time.sleep(1)
 
 except KeyboardInterrupt:
     pass

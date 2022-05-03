@@ -14,6 +14,7 @@
 #
 # ===============================================================================
 
+from services.facetracker_bb import pan_goto
 import servo
 import time
 import math
@@ -82,6 +83,43 @@ class Gimbal():
         self.x = x
         self.y = y
 
+    def guide_to_position(self, x, y, speed):
+
+        # check maximum server limits and change if exceeded
+        if x < self.min_x:
+            x = self.min_x
+        elif x > self.max_x:
+            x = self.max_x
+
+        if y < self.min_y:
+            y = self.min_y
+        elif y > self.max_y:
+            y = self.max_y
+
+        if abs(self.x-x) > abs(self.y-y):
+            x_retard = 1
+            y_retard = abs((self.y-y)/(self.x-x))
+        elif abs(self.x-x) < abs(self.y-y):
+            x_retard = abs((self.x-x)/(self.y-y))
+            y_retard = 1
+
+        while self.x != x and self.y != y:
+            if abs(self.x-x) < speed*self.pan.delay*x_retard:
+                set_x = x
+            elif self.x < x:
+                set_x = self.x+speed*self.pan.delay*x_retard
+            elif self.x > x:
+                set_x = self.x-speed*self.pan.delay*x_retard
+
+            if abs(self.y-y) < speed*self.tilt.delay*y_retard:
+                set_y = y
+            elif self.y < y:
+                set_x = self.x+speed*self.tilt.delay*y_retard
+            elif self.y > y:
+                set_y = self.y-speed*self.tilt.delay*y_retard
+
+            pan_goto(set_x, set_y)
+
     '''
     def pan_search(pan_cx, pan_cy):
         pan_cx = pan_cx + pan_move_x
@@ -94,7 +132,7 @@ class Gimbal():
             print(f"pan_search - at pan_cx={pan_cx} pan_cy={pan_cy}")
         return pan_cx, pan_cy
     '''
-    
+
     def sine_search(self, speed):
         
         sine = [round(self.max_x*math.cos(2*math.pi*n/(STEPS-1)+math.pi)) for n in range(STEPS)]
@@ -107,6 +145,23 @@ class Gimbal():
 
         except KeyboardInterrupt:
             pass
+
+    def box_search(self, speed):
+
+        try:
+            while True:
+                self.guide_to_position(self.min_x,self.max_y,speed)
+                time.sleep(1)
+                self.guide_to_position(self.max_x,self.min_y,speed)
+                time.sleep(1)
+                self.guide_to_position(self.max_x,self.min_y,speed)
+                time.sleep(1)
+                self.guide_to_position(self.min_x,self.min_y,speed)
+                time.sleep(1)
+
+        except KeyboardInterrupt:
+            pass
+
 
     def stop_gimbal(self):
         self.pan.stop_servo
