@@ -35,14 +35,14 @@ try:
         time.sleep(0.01)
     for n in sine:
         servo1.set_angle(n)
-    servo1.guide_to_angle(270, 100)
-    servo1.guide_to_angle(0, 100)
+    servo1.guide_to_angle(270, 50)
+    servo1.guide_to_angle(0, 50)
     servo1.guide_to_angle(270, 200)
     servo1.guide_to_angle(0, 200)
     servo1.guide_to_angle(270, 300)
     servo1.guide_to_angle(0, 300)
-    servo1.guide_to_angle(270, 400)
-    servo1.guide_to_angle(0, 400)
+    servo1.guide_to_angle(270, 270)
+    servo1.guide_to_angle(0, 270)
 
 
 except KeyboardInterrupt:
