@@ -17,6 +17,6 @@ class Human():
 Matthew = Human('Matthew Bissen','hazel','chode')
 Bear = Human('Bear Bissen','blue','chode')
 Nick = Human('Nick Bissen','hazel','hitch-hiker')
-
-
+Mom = Human('Mom','blue','normal')
+Dad = Human('Dad','brown','hitch-hiker')
 
