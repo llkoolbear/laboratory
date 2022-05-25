@@ -41,12 +41,11 @@ FRAME_COUNTER = 1000  # Used for display of FPS (frames/second)
 
 # Pan Tilt Settings
 pan_servo_delay = .15
-servo_max_x_deg = 180
-servo_max_y_deg = 180
-servo_home_xy = (130, 110)
 
-pan_start_x = 40   # Initial x start position
-pan_start_y = 20  # initial y start position
+servo_home_xy = (0, 0)
+
+pan_start_x = 40 # Initial x start position
+pan_start_y = 20 # initial y start position
 
 # Bounds checking for pan/tilt Movements.
 
