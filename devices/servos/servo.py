@@ -15,6 +15,7 @@
 # ===============================================================================
 
 import RPi.GPIO as GPIO
+import device
 import time
 from collections import namedtuple
 
@@ -33,7 +34,7 @@ SERVO_ATTRIBUTES = {
                                 1, 400)             # Degrees per Second
 }
 
-class Servo():
+class Servo(device.Device):
 
     def __init__(self, pin, freq = 50, delay = 0.02, model = 'DS3225'):
         
@@ -43,13 +44,7 @@ class Servo():
         self.model = model
         self.attributes = SERVO_ATTRIBUTES[self.model]
 
-        if not isinstance(freq, (int,float)):
-            err_str = f'"{freq}" not a valid frequency! (usage:int|float)'
-            raise RuntimeError(err_str) 
-
-        if freq < self.attributes.min_freq or freq > self.attributes.max_freq:
-            err_str = f"{freq} degrees out of range! ({self.attributes.min_freq} to {self.attributes.max_freq} degrees)"
-            raise RuntimeError(err_str)
+        self.check_num(freq, "Hz", self.attributes.min_freq, self.attributes.max_freq)
 
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.pin, GPIO.OUT)
@@ -62,13 +57,7 @@ class Servo():
 
     def set_angle(self, angle):
 
-        if not isinstance(angle, (int,float)):
-            err_str = f'"{angle}" not a valid angle! (usage:int|float)'
-            raise RuntimeError(err_str) 
-
-        if angle < self.attributes.min_angle or angle > self.attributes.max_angle:
-            err_str = f"{angle} degrees out of range! ({self.attributes.min_angle} to {self.attributes.max_angle} degrees)"
-            raise RuntimeError(err_str)
+        self.check_num(angle, "degrees", self.attributes.min_angle, self.attributes.max_angle)
 
         self.angle = angle
         self.duty_cycle = self.angle/self.attributes.max_angle*(self.max_duty_cycle-self.min_duty_cycle)+self.min_duty_cycle
@@ -77,21 +66,8 @@ class Servo():
 
     def guide_to_angle(self, angle, speed):
         
-        if not isinstance(angle, (int,float)):
-            err_str = f'"{angle}" not a valid angle! (usage:int|float)'
-            raise RuntimeError(err_str) 
-
-        if angle < self.attributes.min_angle or angle > self.attributes.max_angle:
-            err_str = f"{angle} degrees out of range! ({self.attributes.min_angle} to {self.attributes.max_angle} degrees)"
-            raise RuntimeError(err_str)
-
-        if not isinstance(speed, (int,float)):
-            err_str = f'"{speed}" not a valid angle! (usage:int|float)'
-            raise RuntimeError(err_str) 
-
-        if speed < self.attributes.min_speed or speed > self.attributes.max_speed:
-            err_str = f"{speed} degrees per second out of range! ({self.attributes.min_speed} to {self.attributes.max_speed} degrees per second)"
-            raise RuntimeError(err_str)
+        self.check_num(angle, "degrees", self.attributes.min_angle, self.attributes.max_angle)
+        self.check_num(speed, "degrees/second", self.attributes.min_speed, self.attributes.max_speed)
 
         while self.angle != angle:
             if abs(self.angle-angle) < speed*self.delay:

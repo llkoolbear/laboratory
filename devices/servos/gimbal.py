@@ -1,6 +1,6 @@
 # ===============================================================================
 #
-# Name:       servo.py 
+# Name:       gimbal.py 
 #
 # Purpose:    Driver for servos when controlled by the raspberry pi
 #
@@ -15,6 +15,7 @@
 # ===============================================================================
 
 import servo
+import device
 import time
 import math
 from collections import namedtuple
@@ -32,7 +33,7 @@ GIMBAL_ATTRIBUTES = {
 
 STEPS = 100
 
-class Gimbal():
+class Gimbal(device.Device):
 
     def __init__(self, pan_pin, tilt_pin, max_pan=45, max_tilt=45):
         
