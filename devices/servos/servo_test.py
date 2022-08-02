@@ -16,7 +16,7 @@
 
 import math
 import time
-from .servo import Servo
+from servo import Servo
 
 SERVO_PIN = 13
 SERVO_FREQUENCY = 50
