@@ -16,7 +16,7 @@
 
 import math
 import time
-from gimbal import Gimbal
+from .gimbal import Gimbal
 
 PAN_PIN = 11
 TILT_PIN = 13

@@ -14,7 +14,7 @@
 #
 # ===============================================================================
 
-import servo
+from . import servo
 from .. import device
 import time
 import math
