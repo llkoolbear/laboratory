@@ -16,12 +16,12 @@
 
 import math
 import time
-from gimbal import Gimbal
+from . import gimbal
 
 PAN_PIN = 11
 TILT_PIN = 13
 
-gimbal = Gimbal(PAN_PIN,TILT_PIN)
+gimbal = gimbal.Gimbal(PAN_PIN,TILT_PIN)
 
 try:
     gimbal.box_search(400)

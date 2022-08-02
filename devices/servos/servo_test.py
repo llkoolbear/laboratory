@@ -16,13 +16,13 @@
 
 import math
 import time
-from servo import Servo
+from . import servo
 
 SERVO_PIN = 13
 SERVO_FREQUENCY = 50
 STEPS = 100
 
-servo1 = Servo(SERVO_PIN,SERVO_FREQUENCY)
+servo1 = servo.Servo(SERVO_PIN,SERVO_FREQUENCY)
 sine = [round(servo1.attributes.max_angle*(math.cos(2*math.pi*n/(STEPS-1)+math.pi)+1)/2) for n in range(STEPS)]
 
 try:
