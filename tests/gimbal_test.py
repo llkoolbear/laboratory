@@ -16,7 +16,7 @@
 
 import math
 import time
-from . import gimbal
+from ..devices.servos import gimbal
 
 PAN_PIN = 11
 TILT_PIN = 13
