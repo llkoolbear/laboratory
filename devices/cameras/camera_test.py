@@ -1,25 +1,54 @@
-# import the opencv library
-import cv2
+import cv2 as cv
+from imutils.video import WebcamVideoStream
+from imutils.video import FPS
 
-# define a video capture object
-vid = cv2.VideoCapture(0)
+cap = cv.VideoCapture(0)
+if not cap.isOpened():
+    print("Cannot open camera")
+    exit()
+fps = FPS().start()
+while True:
+    # Capture frame-by-frame
+    grabbed, frame = cap.read()
+    # if frame is read correctly ret is True
+    if not grabbed:
+        print("Can't receive frame (stream end?). Exiting ...")
+        break
+    # Our operations on the frame come here
+    gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+    # Display the resulting frame
+    cv.imshow('frame', gray)
+    if cv.waitKey(1) == ord('q'):
+        break
+    fps.update()
 
-while(True):
-	
-	# Capture the video frame
-	# by frame
-	ret, frame = vid.read()
+fps.stop()
+print("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))
+print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
 
-	# Display the resulting frame
-	cv2.imshow('frame', frame)
-	
-	# the 'q' button is set as the
-	# quitting button you may use any
-	# desired button of your choice
-	if cv2.waitKey(1) & 0xFF == ord('q'):
-		break
+# When everything done, release the capture
+cap.release()
+cv.destroyAllWindows()
 
-# After the loop release the cap object
-vid.release()
-# Destroy all the windows
-cv2.destroyAllWindows()
+stream = WebcamVideoStream(0).start()
+fps = FPS().start()
+
+while not stream.stopped:
+    # Capture frame-by-frame
+    frame = stream.read()
+    # Our operations on the frame come here
+    gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+    # Display the resulting frame
+    cv.imshow('frame', gray)
+    if cv.waitKey(1) == ord('q'):
+        break
+    # Update the FPS counter
+    fps.update()
+
+fps.stop()
+print("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))
+print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
+
+# When everything done, stop the stream
+stream.stop()
+cv.destroyAllWindows()

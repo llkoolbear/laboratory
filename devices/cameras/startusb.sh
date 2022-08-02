@@ -1,0 +1,29 @@
+#!/bin/bash
+sudo modprobe usbcore
+sudo modprobe usb-common
+sudo modprobe hid-generic
+sudo modprobe hid
+sudo modprobe usbnet
+sudo modprobe cdc_ether
+sudo modprobe rndis_host
+sudo modprobe usbserial
+sudo modprobe usb-storage
+sudo modprobe cdc-acm
+sudo modprobe ftdi_sio
+sudo modprobe usbip-core
+sudo modprobe vhci-hcd
+sudo modprobe dvb-core
+sudo modprobe videodev
+sudo modprobe v4l2-dv-timings
+sudo modprobe videobuf2-common
+sudo modprobe videobuf2-memops
+sudo modprobe videobuf2-v4l2
+sudo modprobe videobuf2-vmalloc
+sudo modprobe mc
+sudo modprobe uvcvideo
+sudo modprobe mii
+sudo modprobe cdc_ncm
+sudo modprobe phy-generic
+sudo modprobe ch341
+sudo modprobe cp210x
+echo $(cat /etc/resolv.conf | grep nameserver | awk '{print $2}')
