@@ -15,7 +15,7 @@
 # ===============================================================================
 
 import servo
-import device
+from .. import device
 import time
 import math
 from collections import namedtuple
@@ -62,7 +62,7 @@ class Gimbal(device.Device):
         ''' Move the pan/tilt to a specific location.
             Convert cartesian x and y to servo angle
         '''
-        # check maximum server limits and change if exceeded
+        # check maximum servo limits and change if exceeded
         if x < self.min_x:
             x = self.min_x
         elif x > self.max_x:
