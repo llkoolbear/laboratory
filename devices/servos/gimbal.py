@@ -135,7 +135,7 @@ class Gimbal(device.Device):
     '''
 
     def sine_search(self, speed):
-        steps = self.max_x*2/5
+        steps = round(self.max_x*2/5)
         sleep = self.max_x*2/speed/steps
         
         sine = [round(self.max_x*math.cos(2*math.pi*n/(steps-1)+math.pi)) for n in range(steps)]
