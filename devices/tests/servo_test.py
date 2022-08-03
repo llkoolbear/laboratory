@@ -16,7 +16,7 @@
 
 import math
 import time
-from servos import servo
+from devices.servos import servo
 
 SERVO_PIN = 13
 SERVO_FREQUENCY = 50

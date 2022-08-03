@@ -14,8 +14,8 @@
 #
 # ===============================================================================
 
-from servos import servo
 from devices import device
+from devices.servos import servo
 import time
 import math
 from collections import namedtuple
