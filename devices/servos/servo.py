@@ -56,7 +56,6 @@ class Servo(device.Device):
         self.pwm.start(self.min_duty_cycle)
 
     def set_angle(self, angle):
-
         self.check_num(angle, "degrees", self.attributes.min_angle, self.attributes.max_angle)
 
         self.angle = angle

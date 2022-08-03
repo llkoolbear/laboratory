@@ -63,26 +63,21 @@ class Gimbal(device.Device):
         ''' Move the pan/tilt to a specific location.
             Convert cartesian x and y to servo angle
         '''
-        # check maximum servo limits and change if exceeded
-        if x < self.min_x:
-            x = self.min_x
-        elif x > self.max_x:
-            x = self.max_x
+        if x != None:
+            if x < self.min_x:
+                x = self.min_x
+            elif x > self.max_x:
+                x = self.max_x
+            self.pan.set_angle(x + self.pan.attributes.mid_angle)
+            self.x = x
 
-        if y < self.min_y:
-            y = self.min_y
-        elif y > self.max_y:
-            y = self.max_y
-
-        # convert and move pan servo
-        self.pan.set_angle(x + self.pan.attributes.mid_angle)
-        self.tilt.set_angle(y + self.tilt.attributes.mid_angle)
-
-        #if verbose:
-        #    print(f"pan_goto - Moved Camera to pan_cx={x} pan_cy={y}")
-        
-        self.x = x
-        self.y = y
+        if y != None:
+            if y < self.min_y:
+                y = self.min_y
+            elif y > self.max_y:
+                y = self.max_y
+            self.tilt.set_angle(y + self.tilt.attributes.mid_angle)
+            self.y = y        
 
     def guide_to_position(self, x, y, speed):
 
