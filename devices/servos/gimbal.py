@@ -35,12 +35,13 @@ STEPS = 100
 
 class Gimbal(device.Device):
 
-    def __init__(self, pan_pin, tilt_pin, max_pan=45, max_tilt=45):
+    def __init__(self, pan_pin, tilt_pin, max_pan=45, max_tilt=45, model='DS3225'):
         
         self.pan_pin = pan_pin # GPIO pin on the Raspberry Pi refer to Board (#) not BCM GPIO#
         self.tilt_pin = tilt_pin
         self.pan = servo.Servo(pan_pin)
         self.tilt = servo.Servo(tilt_pin)
+        self.model = model
         self.attributes = GIMBAL_ATTRIBUTES[self.model]
 
         if max_pan > self.pan.attributes.mid_angle:
