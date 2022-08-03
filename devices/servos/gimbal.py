@@ -31,8 +31,6 @@ GIMBAL_ATTRIBUTES = {
                                 500e-6, 2500e-6)    # Pulse Width in Seconds
 }
 
-STEPS = 100
-
 class Gimbal(device.Device):
 
     def __init__(self, pan_pin, tilt_pin, max_pan=30, max_tilt=15, model='DS3225'):
@@ -75,7 +73,7 @@ class Gimbal(device.Device):
 
         self.pan.set_angle(x + self.pan.attributes.mid_angle)
         self.tilt.set_angle(y + self.tilt.attributes.mid_angle)
-        
+
         self.x = x
         self.y = y        
 
@@ -137,14 +135,17 @@ class Gimbal(device.Device):
     '''
 
     def sine_search(self, speed):
+        steps = self.max_x*2/5
+        sleep = self.max_x*2/speed/steps
         
-        sine = [round(self.max_x*math.cos(2*math.pi*n/(STEPS-1)+math.pi)) for n in range(STEPS)]
+        sine = [round(self.max_x*math.cos(2*math.pi*n/(steps-1)+math.pi)) for n in range(steps)]
 
         try:
             while True:
                 for n in sine:
                     self.pan_goto(n,0)
-                    time.sleep(0.01*(5-speed))
+                    if sleep > self.pan.delay:
+                        time.sleep(sleep - self.pan.delay)
 
         except KeyboardInterrupt:
             pass
