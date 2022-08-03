@@ -107,6 +107,8 @@ class Gimbal(device.Device):
         while self.x != x or self.y != y:
             if abs(self.x-x) < speed*self.pan.delay:
                 set_x = x
+            elif self.x == x:
+                set_x = None
             elif self.x < x:
                 set_x = self.x+speed*self.pan.delay*x_retard
             elif self.x > x:
@@ -114,6 +116,8 @@ class Gimbal(device.Device):
 
             if abs(self.y-y) < speed*self.tilt.delay:
                 set_y = y
+            elif self.y == y:
+                set_y = None
             elif self.y < y:
                 set_y = self.y+speed*self.tilt.delay*y_retard
             elif self.y > y:
