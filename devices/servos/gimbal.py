@@ -41,7 +41,7 @@ class Gimbal(device.Device):
         self.tilt_pin = tilt_pin
         self.pan = servo.Servo(pan_pin)
         self.tilt = servo.Servo(tilt_pin)
-        #self.attributes = GIMBAL_ATTRIBUTES[self.model]
+        self.attributes = GIMBAL_ATTRIBUTES[self.model]
 
         if max_pan > self.pan.attributes.mid_angle:
             max_pan = self.pan.attributes.mid_angle

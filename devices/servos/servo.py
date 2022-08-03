@@ -14,7 +14,7 @@
 #
 # ===============================================================================
 
-#import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 from devices import device
 import time
 from collections import namedtuple
@@ -46,14 +46,14 @@ class Servo(device.Device):
 
         self.check_num(freq, "Hz", self.attributes.min_freq, self.attributes.max_freq)
 
-        #GPIO.setmode(GPIO.BOARD)
-        #GPIO.setup(self.pin, GPIO.OUT)
-        #self.pwm = GPIO.PWM(self.pin, self.freq)
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(self.pin, GPIO.OUT)
+        self.pwm = GPIO.PWM(self.pin, self.freq)
         self.min_duty_cycle = self.freq*self.attributes.min_pulse_width*100
         self.max_duty_cycle = self.freq*self.attributes.max_pulse_width*100
         self.duty_cycle = self.min_duty_cycle
         self.angle = 0
-        #self.pwm.start(self.min_duty_cycle)
+        self.pwm.start(self.min_duty_cycle)
 
     def set_angle(self, angle):
 
@@ -61,7 +61,7 @@ class Servo(device.Device):
 
         self.angle = angle
         self.duty_cycle = self.angle/self.attributes.max_angle*(self.max_duty_cycle-self.min_duty_cycle)+self.min_duty_cycle
-        #self.pwm.ChangeDutyCycle(self.duty_cycle)
+        self.pwm.ChangeDutyCycle(self.duty_cycle)
         time.sleep(self.delay)
 
     def guide_to_angle(self, angle, speed):
@@ -78,7 +78,7 @@ class Servo(device.Device):
                 self.set_angle(self.angle-speed*self.delay)
 
     def stop_servo(self):
-        #self.pwm.stop()
+        self.pwm.stop()
         time.sleep(self.delay)
-        #GPIO.cleanup()
+        GPIO.cleanup()
         time.sleep(self.delay)
