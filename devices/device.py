@@ -30,8 +30,7 @@ class Device:
         pass
 
     def enum_to_usage_str(self, enum):
-        return f"{enum.__name__}.{{{str([m for m in enum.__members__])}"\
-                .replace('[', '').replace(']', '').replace('\'', '') + '}'
+        return f"{enum.__name__}.{{{str([m for m in enum.__members__])}".replace('[', '').replace(']', '').replace('\'', '') + '}'
 
     def parse_as(self, string, cast):
         try: 
