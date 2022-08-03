@@ -63,21 +63,21 @@ class Gimbal(device.Device):
         ''' Move the pan/tilt to a specific location.
             Convert cartesian x and y to servo angle
         '''
-        if x != None:
-            if x < self.min_x:
-                x = self.min_x
-            elif x > self.max_x:
-                x = self.max_x
-            self.pan.set_angle(x + self.pan.attributes.mid_angle)
-            self.x = x
+        if x < self.min_x:
+            x = self.min_x
+        elif x > self.max_x:
+            x = self.max_x
+        
+        if y < self.min_y:
+            y = self.min_y
+        elif y > self.max_y:
+            y = self.max_y
 
-        if y != None:
-            if y < self.min_y:
-                y = self.min_y
-            elif y > self.max_y:
-                y = self.max_y
-            self.tilt.set_angle(y + self.tilt.attributes.mid_angle)
-            self.y = y        
+        self.pan.set_angle(x + self.pan.attributes.mid_angle)
+        self.tilt.set_angle(y + self.tilt.attributes.mid_angle)
+        
+        self.x = x
+        self.y = y        
 
     def guide_to_position(self, x, y, speed):
 
@@ -107,8 +107,6 @@ class Gimbal(device.Device):
         while self.x != x or self.y != y:
             if abs(self.x-x) < speed*self.pan.delay:
                 set_x = x
-            elif self.x == x:
-                set_x = None
             elif self.x < x:
                 set_x = self.x+speed*self.pan.delay*x_retard
             elif self.x > x:
@@ -116,8 +114,6 @@ class Gimbal(device.Device):
 
             if abs(self.y-y) < speed*self.tilt.delay:
                 set_y = y
-            elif self.y == y:
-                set_y = None
             elif self.y < y:
                 set_y = self.y+speed*self.tilt.delay*y_retard
             elif self.y > y:
