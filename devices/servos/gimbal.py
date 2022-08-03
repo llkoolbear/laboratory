@@ -35,7 +35,7 @@ STEPS = 100
 
 class Gimbal(device.Device):
 
-    def __init__(self, pan_pin, tilt_pin, max_pan=45, max_tilt=45, model='DS3225'):
+    def __init__(self, pan_pin, tilt_pin, max_pan=45, max_tilt=30, model='DS3225'):
         
         self.pan_pin = pan_pin # GPIO pin on the Raspberry Pi refer to Board (#) not BCM GPIO#
         self.tilt_pin = tilt_pin
@@ -109,7 +109,7 @@ class Gimbal(device.Device):
         print(x_retard,y_retard)
         print(self.x,self.y)    
         print(x, y)
-        while self.x != x and self.y != y:
+        while self.x != x or self.y != y:
             if abs(self.x-x) < speed*self.pan.delay*x_retard:
                 set_x = x
             elif self.x < x:
