@@ -15,7 +15,7 @@
 # ===============================================================================
 
 #import RPi.GPIO as GPIO
-from .. import device
+from devices import device
 import time
 from collections import namedtuple
 
