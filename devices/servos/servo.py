@@ -57,14 +57,14 @@ class Servo(device.Device):
         self.max_duty_cycle = self.freq*self.attributes.max_pulse_width*100
         self.duty_cycle = self.min_duty_cycle
         self.angle = 0
-        self.pwm.set_PWM_dutycycle(self.min_duty_cycle)
+        self.pwm.set_PWM_dutycycle(self.pin, self.min_duty_cycle)
 
     def set_angle(self, angle):
         self.check_num(angle, "degrees", self.attributes.min_angle, self.attributes.max_angle)
 
         self.angle = angle
         self.duty_cycle = self.angle/self.attributes.max_angle*(self.max_duty_cycle-self.min_duty_cycle)+self.min_duty_cycle
-        self.pwm.set_PWM_dutycycle(self.duty_cycle)
+        self.pwm.set_PWM_dutycycle(self.pin, self.duty_cycle)
         time.sleep(self.delay)
 
     def guide_to_angle(self, angle, speed):
