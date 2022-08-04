@@ -18,7 +18,7 @@ import math
 import time
 from devices.servos import servo
 
-SERVO_PIN = 13
+SERVO_PIN = 27 #13
 SERVO_FREQUENCY = 50
 STEPS = 100
 

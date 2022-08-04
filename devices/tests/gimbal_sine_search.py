@@ -18,8 +18,8 @@ import math
 import time
 from devices.servos import gimbal
 
-PAN_PIN = 11
-TILT_PIN = 13
+PAN_PIN = 17 #11
+TILT_PIN = 27 #13
 
 gimbal = gimbal.Gimbal(PAN_PIN,TILT_PIN)
 
