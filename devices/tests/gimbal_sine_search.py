@@ -24,7 +24,7 @@ TILT_PIN = 27 #13
 gimbal = gimbal.Gimbal(PAN_PIN,TILT_PIN)
 
 try:
-    gimbal.sine_search(100)
+    gimbal.sine_search(50)
 
 except KeyboardInterrupt:
     pass
