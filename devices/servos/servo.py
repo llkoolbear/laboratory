@@ -53,6 +53,7 @@ class Servo(device.Device):
         self.pwm = pigpio.pi()
         self.pwm.set_mode(self.pin, pigpio.OUTPUT)
         self.pwm.set_PWM_frequency(self.pin, self.freq)
+        self.pwm.set_PWM_range(self.pin, 100)
         self.min_duty_cycle = self.freq*self.attributes.min_pulse_width*100
         self.max_duty_cycle = self.freq*self.attributes.max_pulse_width*100
         self.duty_cycle = self.min_duty_cycle
@@ -83,5 +84,5 @@ class Servo(device.Device):
     def stop_servo(self):
         self.pwm.stop()
         time.sleep(self.delay)
-        GPIO.cleanup()
+        #GPIO.cleanup()
         time.sleep(self.delay)
