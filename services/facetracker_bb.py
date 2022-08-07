@@ -164,6 +164,7 @@ class FaceTracker():
     START_Y = 5
     MOVE_X = 2
     MOVE_Y = 1
+    SPEED = 25
         
     def __init__(self):
 
@@ -222,7 +223,7 @@ class FaceTracker():
     def pan_to_pixel(self, pixel_x, pixel_y):
         pan_dx = int((self.camera.CAMERA_CENTER_X - pixel_x) / self.camera.PIXELS_PER_DEGREE_X)
         pan_dy = int((self.camera.CAMERA_CENTER_Y - pixel_y) / self.camera.PIXELS_PER_DEGREE_Y)
-        self.gimbal.pan_goto(self.gimbal.x-pan_dx, self.gimbal.y-pan_dy)
+        self.gimbal.guide_to_position(self.gimbal.x+pan_dx, self.gimbal.y-pan_dy, self.SPEED)
 
     def stop_track(self):
         self.camera.stop_camera()
