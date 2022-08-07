@@ -129,16 +129,19 @@ class Camera(WebcamVideoStream):
                 for (x, y, w, h) in faces:
                     cv.rectangle(self.img, (x, y), (x+w, y+h), BLUE, 2)
                     if w*h > biggest_face_area:
-                        biggest_face = (x, y, w, h)
+                        #biggest_face = (x, y, w, h)
                         biggest_face_area = w*h
-                (self.face_corner_x, self.face_corner_y, self.face_width, self.face_height) = biggest_face
-                self.face_center_x = int(self.face_corner_x + self.face_width/2)
-                self.face_center_y = int(self.face_corner_y + self.face_height/2)
-                self.face_area = self.face_width*self.face_height
-                cv.rectangle(self.img, (self.face_corner_x, self.face_corner_y), (self.face_corner_x+self.face_width, self.face_corner_y+self.face_height), GREEN, 2)
-
-                print("detect_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % 
-                    (self.face_center_x, self.face_center_y, self.face_width, self.face_height, self.face_area))
+                        #(self.face_corner_x, self.face_corner_y, self.face_width, self.face_height) = biggest_face
+                        self.face_corner_x = x
+                        self.face_corner_y = y
+                        self.face_width = w
+                        self.face_height = h
+                        self.face_center_x = int(self.face_corner_x + self.face_width/2)
+                        self.face_center_y = int(self.face_corner_y + self.face_height/2)
+                        self.face_area = self.face_width*self.face_height
+                        cv.rectangle(self.img, (self.face_corner_x, self.face_corner_y), (self.face_corner_x+self.face_width, self.face_corner_y+self.face_height), GREEN, 2)
+                        print("detect_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % 
+                            (self.face_center_x, self.face_center_y, self.face_width, self.face_height, self.face_area))
             else:
                 print("detect_face - No Face Found")
                 self.face_found = False
