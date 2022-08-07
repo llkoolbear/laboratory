@@ -109,7 +109,7 @@ class Camera(WebcamVideoStream):
                         (mx, my, mw, mh) = cv.boundingRect(c)    # get motion contour data
                         self.motion_center_x = int(mx + mw/2)
                         self.motion_center_y = int(my + mh/2)
-                print("detect_motion - Found Motion at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (int(mx + mw/2), int(my + mh/2), mw, mh, biggest_area))
+                        print("detect_motion - Found Motion at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (int(mx + mw/2), int(my + mh/2), mw, mh, biggest_area))
             else:
                 print("detect_motion - No Motion Found")
                 self.motion_found = False
