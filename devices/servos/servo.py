@@ -14,7 +14,6 @@
 #
 # ===============================================================================
 
-import RPi.GPIO as GPIO
 import pigpio
 from devices import device
 import time
@@ -47,9 +46,6 @@ class Servo(device.Device):
 
         self.check_num(freq, "Hz", self.attributes.min_freq, self.attributes.max_freq)
 
-        #GPIO.setmode(GPIO.BOARD)
-        #GPIO.setup(self.pin, GPIO.OUT)
-        #self.pwm = GPIO.PWM(self.pin, self.freq)
         self.pwm = pigpio.pi()
         self.pwm.set_mode(self.pin, pigpio.OUTPUT)
         self.pwm.set_PWM_frequency(self.pin, self.freq)
@@ -83,6 +79,4 @@ class Servo(device.Device):
 
     def stop_servo(self):
         self.pwm.stop()
-        time.sleep(self.delay)
-        #GPIO.cleanup()
         time.sleep(self.delay)

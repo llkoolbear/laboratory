@@ -120,19 +120,14 @@ class Gimbal(device.Device):
             self.pan_goto(set_x, set_y)
             print(self.x,self.y)    
 
-
-    '''
-    def pan_search(pan_cx, pan_cy):
-        pan_cx = pan_cx + pan_move_x
-        if pan_cx > pan_max_right:
-            pan_cx = pan_max_left
-            pan_cy = pan_cy + pan_move_y
-            if pan_cy > pan_max_bottom:
-                pan_cy = pan_max_top
-        if debug:
-            print(f"pan_search - at pan_cx={pan_cx} pan_cy={pan_cy}")
-        return pan_cx, pan_cy
-    '''
+    def pan_search(self, move_x, move_y):
+        pan_dx = self.x + move_x
+        if pan_dx > self.max_x:
+            pan_dx = self.min_x
+        pan_dy = pan_dy + move_y
+        if pan_dy > self.max_y:
+            pan_dy = self.min_y
+        self.pan_goto(pan_dx, pan_dy)
 
     def sine_search(self, speed):
         steps = round(self.max_x*2/5)
