@@ -213,9 +213,9 @@ class FaceTracker():
                     self.find_face()
                 else:
                     self.follow_face()
-                cv.imshow('img', self.camera.img)
                 self.camera.previous_img = self.camera.img  # set previous frame for next iteration
-            
+            cv.imshow('img', self.camera.img)
+
     def find_face(self):
         self.camera.detect_face()
         if self.camera.face_found:
