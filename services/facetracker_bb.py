@@ -115,6 +115,7 @@ class Camera(WebcamVideoStream):
                 self.motion_found = False
                 self.motion_center_x = None
                 self.motion_center_y = None
+        print(f'img {self.img}, previous_img {self.previous_img}, where they at?')
 
     def detect_face(self):
         biggest_face = None
@@ -152,6 +153,7 @@ class Camera(WebcamVideoStream):
                 self.face_width = None
                 self.face_height = None
                 self.face_area = None
+        print('no img bruh.... what now?')
 class FaceTracker():
 
     PAN_PIN = 17 #11
@@ -197,8 +199,7 @@ class FaceTracker():
                     print(f"track_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
             else:
                 print("track_face - No Face Found, Looking for Motion")
-                if self.camera.previous_img is not None:
-                    self.camera.detect_motion()
+                self.camera.detect_motion()
                 if self.camera.motion_found:
                     if self.debug:
                         print(f"track_face - Motion found at ({self.camera.motion_center_x},{self.camera.motion_center_x}) pixels")
