@@ -185,6 +185,7 @@ class FaceTracker():
         while not self.camera.stopped:
             
             self.camera.img = self.camera.read()
+            print(self.camera.img)
             self.camera.detect_face()
             if self.camera.face_found:
                 if self.debug:
