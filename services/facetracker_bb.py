@@ -211,6 +211,7 @@ class FaceTracker():
                 if self.debug:
                     print(f"track_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
             else:
+                '''
                 print("track_face - No Face Found, Looking for Motion")
                 if self.camera.img is not None:
                     cv.imshow('img', self.camera.img)
@@ -224,11 +225,12 @@ class FaceTracker():
                     if self.debug:
                         print(f"track_face - Panned to ({self.gimbal.x},{self.gimbal.y})")
                 else:
-                    if self.debug:
-                        print("track_face - No motion found, beginning pan search")
-                    self.gimbal.pan_search(self.MOVE_X,self.MOVE_Y, self.SPEED)
-                    if self.debug:
-                        print(f"track_face - Panned to ({self.gimbal.x},{self.gimbal.y})")
+                '''
+            if self.debug:
+                print("track_face - No motion found, beginning pan search")
+            self.gimbal.pan_search(self.MOVE_X,self.MOVE_Y, self.SPEED)
+            if self.debug:
+                print(f"track_face - Panned to ({self.gimbal.x},{self.gimbal.y})")
             
             if cv.waitKey(1) == ord('q'):
                 break
