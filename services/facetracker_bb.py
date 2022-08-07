@@ -212,6 +212,10 @@ class FaceTracker():
                     print(f"track_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
             else:
                 print("track_face - No Face Found, Looking for Motion")
+                if self.camera.img is not None:
+                    cv.imshow('img', self.camera.img)
+                    self.camera.previous_img = self.camera.img  # set previous frame for next iteration
+                    self.camera.img = self.camera.read()
                 self.camera.detect_motion()
                 if self.camera.motion_found:
                     if self.debug:
