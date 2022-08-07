@@ -48,7 +48,7 @@ class Camera(WebcamVideoStream):
     CAMERA_VFLIP = False
 
     # OpenCV Motion Tracking Settings
-    MIN_AREA = 1000     # sq pixels - exclude all motion contours less than or equal to this Area
+    MIN_AREA = 2000     # sq pixels - exclude all motion contours less than or equal to this Area
     THRESHOLD_SENSITIVITY = 25
     BLUR_SIZE = 10
 
