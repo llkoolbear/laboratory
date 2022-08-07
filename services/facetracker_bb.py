@@ -59,8 +59,8 @@ class Camera(WebcamVideoStream):
         self.stream.set(cv.CAP_PROP_FRAME_HEIGHT, self.CAMERA_HEIGHT)
         # Set the camera frame rate to 30fps
         self.stream.set(cv.CAP_PROP_FPS, self.CAMERA_FRAMERATE)
-        self.frame = None
-        self.previous_frame = None
+        self.img = None
+        self.previous_img = None
 
         self.motion_found = False
         self.motion_center_x = None
@@ -85,10 +85,10 @@ class Camera(WebcamVideoStream):
         cv.destroyAllWindows()
 
     def detect_motion(self):
-        if self.frame is not None and self.previous_frame is not None:
+        if self.img is not None and self.previous_img is not None:
             # Convert frame to grayscale
-            gray_img_1 = cv.cvtColor(self.frame, cv.COLOR_BGR2GRAY)
-            gray_img_2 = cv.cvtColor(self.previous_frame, cv.COLOR_BGR2GRAY)
+            gray_img_1 = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
+            gray_img_2 = cv.cvtColor(self.previous_img, cv.COLOR_BGR2GRAY)
             biggest_area = self.MIN_AREA
             # Process images to see if there is motion
             differenceimage = cv.absdiff(gray_img_1, gray_img_2)
@@ -119,15 +119,15 @@ class Camera(WebcamVideoStream):
     def detect_face(self):
         biggest_face = None
         biggest_face_area = 0
-        if self.frame is not None:
-            gray = cv.cvtColor(self.frame, cv.COLOR_BGR2GRAY)
+        if self.img is not None:
+            gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
             # Detect the faces
             faces = self.face_classifier.detectMultiScale(gray, 1.1, 4)
             # Draw the rectangle around each face
             if faces != ():
                 self.face_found = True
                 for (x, y, w, h) in faces:
-                    cv.rectangle(self.frame, (x, y), (x+w, y+h), BLUE, 2)
+                    cv.rectangle(self.img, (x, y), (x+w, y+h), BLUE, 2)
                     if w*h > biggest_face_area:
                         biggest_face = (x, y, w, h)
                         biggest_face_area = w*h
@@ -135,7 +135,7 @@ class Camera(WebcamVideoStream):
                 self.face_center_x = int(self.face_corner_x + self.face_width/2)
                 self.face_center_y = int(self.face_corner_y + self.face_height/2)
                 self.face_area = self.face_width*self.face_height
-                cv.rectangle(self.frame, (self.face_corner_x, self.face_corner_y), (self.face_corner_x+self.face_width, self.face_corner_y+self.face_height), GREEN, 2)
+                cv.rectangle(self.img, (self.face_corner_x, self.face_corner_y), (self.face_corner_x+self.face_width, self.face_corner_y+self.face_height), GREEN, 2)
 
                 print("detect_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % 
                     (self.face_center_x, self.face_center_y, self.face_width, self.face_height, self.face_area))
@@ -184,7 +184,7 @@ class FaceTracker():
 
         while not self.camera.stopped:
             
-            self.camera.frame = self.camera.read()
+            self.camera.img = self.camera.read()
             self.camera.detect_face()
             if self.camera.face_found:
                 if self.debug:
@@ -204,15 +204,16 @@ class FaceTracker():
                         print(f"track_face - Panned to ({self.gimbal.x},{self.gimbal.y})")
                 else:
                     if self.debug:
-                        print("track_face - No motion found, begginning pan search")
+                        print("track_face - No motion found, beginning pan search")
                     self.gimbal.pan_search(self.MOVE_X,self.MOVE_Y)
                     if self.debug:
                         print(f"track_face - Panned to ({self.gimbal.x},{self.gimbal.y})")
             
             if cv.waitKey(1) == ord('q'):
                 break
-            cv.imshow('frame', self.camera.frame)
-            self.camera.previous_frame = self.camera.frame  # set previous frame for next iteration
+            if self.camera.img is not None:
+                cv.imshow('img', self.camera.img)
+                self.camera.previous_img = self.camera.img  # set previous frame for next iteration
 
     def pan_to_pixel(self, pixel_x, pixel_y):
         pan_dx = int((self.camera.CAMERA_CENTER_X - pixel_x) / self.camera.PIXELS_PER_DEGREE_X)
