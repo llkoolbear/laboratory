@@ -85,6 +85,9 @@ class Camera(WebcamVideoStream):
         cv.destroyAllWindows()
 
     def detect_motion(self):
+        self.motion_found = False
+        self.motion_center_x = None
+        self.motion_center_y = None
         if self.img is not None and self.previous_img is not None:
             # Convert frame to grayscale
             gray_img_1 = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
@@ -112,14 +115,20 @@ class Camera(WebcamVideoStream):
                         print("detect_motion - Found Motion at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (int(mx + mw/2), int(my + mh/2), mw, mh, biggest_area))
             else:
                 print("detect_motion - No Motion Found")
-                self.motion_found = False
-                self.motion_center_x = None
-                self.motion_center_y = None
-        print(f'img {self.img}, previous_img {self.previous_img}, where they at?')
+                
+        print('detect_motion - No Images Found')
 
     def detect_face(self):
         biggest_face = None
         biggest_face_area = 0
+        self.face_found = False
+        self.face_corner_x = None
+        self.face_corner_y = None
+        self.face_center_x = None
+        self.face_center_y = None
+        self.face_width = None
+        self.face_height = None
+        self.face_area = None
         if self.img is not None:
             gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
             # Detect the faces
@@ -145,15 +154,7 @@ class Camera(WebcamVideoStream):
                             (self.face_center_x, self.face_center_y, self.face_width, self.face_height, self.face_area))
             else:
                 print("detect_face - No Face Found")
-                self.face_found = False
-                self.face_corner_x = None
-                self.face_corner_y = None
-                self.face_center_x = None
-                self.face_center_y = None
-                self.face_width = None
-                self.face_height = None
-                self.face_area = None
-        print('no img bruh.... what now?')
+        print('detect_face - No Images Found')
 class FaceTracker():
 
     PAN_PIN = 17 #11
