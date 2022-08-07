@@ -160,7 +160,8 @@ class Camera(WebcamVideoStream):
                             (self.face_center_x, self.face_center_y, self.face_width, self.face_height, self.face_area))
             else:
                 print("detect_face - No Face Found")
-        print('detect_face - No Images Found')
+        else:
+            print('detect_face - No Images Found')
 class FaceTracker():
 
     PAN_PIN = 17 #11
@@ -204,7 +205,6 @@ class FaceTracker():
             
             self.camera.img = self.camera.read()
             if self.camera.img is not None:
-                print(self.camera.img)
                 self.camera.detect_face()
                 if self.camera.face_found:
                     if self.debug:
