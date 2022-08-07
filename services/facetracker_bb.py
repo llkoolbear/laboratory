@@ -228,12 +228,12 @@ class FaceTracker():
                             print(f"track_face - Panned to ({self.gimbal.x},{self.gimbal.y})")
                     else:
                     '''
-                if self.debug:
-                    print("track_face - No motion found, beginning pan search")
+                    if self.debug:
+                        print("track_face - No motion found, beginning pan search")
                     self.update_heading()
                     self.head_to_heading()
-                if self.debug:
-                    print(f"track_face - Panned to ({self.gimbal.x},{self.gimbal.y})")
+                    if self.debug:
+                        print(f"track_face - Panned to ({self.gimbal.x},{self.gimbal.y})")
                 cv.imshow('img', self.camera.img)
                 self.camera.previous_img = self.camera.img  # set previous frame for next iteration
             if cv.waitKey(1) == ord('q'):
