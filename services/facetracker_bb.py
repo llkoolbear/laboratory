@@ -31,6 +31,7 @@ import imutils
 BLUE = (255,0,0)
 GREEN = (0,255,0)
 RED = (0,0,255)
+PURPLE = (255,0,255)
 
 class Camera(WebcamVideoStream):
 
@@ -55,7 +56,7 @@ class Camera(WebcamVideoStream):
     # OpenCv Face Detection
     LINE_THICKNESS = 2
     SCALE_FACTOR = 1.2
-    MIN_NEIGHBORS = 5
+    MIN_NEIGHBORS = 6
  
 
     def __init__(self, src=CAMERA_SRC):
@@ -120,6 +121,7 @@ class Camera(WebcamVideoStream):
                         (mx, my, mw, mh) = cv.boundingRect(c)    # get motion contour data
                         self.motion_center_x = int(mx + mw/2)
                         self.motion_center_y = int(my + mh/2)
+                        cv.rectangle(self.img, (mx, my), (mx+mw, my+mh), PURPLE, self.LINE_THICKNESS)
                         print("detect_motion - Found Motion at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (int(mx + mw/2), int(my + mh/2), mw, mh, biggest_area))
             else:
                 print("detect_motion - No Motion Found") 
