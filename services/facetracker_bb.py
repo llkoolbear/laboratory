@@ -204,6 +204,7 @@ class FaceTracker():
             
             self.camera.img = self.camera.read()
             if self.camera.img is not None:
+                print(self.camera.img)
                 self.camera.detect_face()
                 if self.camera.face_found:
                     if self.debug:
