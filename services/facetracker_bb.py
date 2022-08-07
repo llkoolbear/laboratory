@@ -50,7 +50,13 @@ class Camera(WebcamVideoStream):
     # OpenCV Motion Tracking Settings
     MIN_AREA = 2000       # sq pixels - exclude all motion contours less than or equal to this Area
     THRESHOLD_SENSITIVITY = 25
-    BLUR_SIZE = 10    
+    BLUR_SIZE = 10   
+
+    # OpenCv Face Detection
+    LINE_THICKNESS = 2
+    SCALE_FACTOR = 1.2
+    MIN_NEIGHBORS = 5
+ 
 
     def __init__(self, src=CAMERA_SRC):
         super().__init__(src)
@@ -79,6 +85,8 @@ class Camera(WebcamVideoStream):
         models_path = '/home/bearbissen/repos/opencv/data/haarcascades/'
         frontal_face_model = models_path + 'haarcascade_frontalface_default.xml'
         self.face_classifier = cv.CascadeClassifier(frontal_face_model)
+
+        
 
     def stop_camera(self):
         self.stop()
@@ -131,11 +139,11 @@ class Camera(WebcamVideoStream):
         if self.img is not None:
             gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
             # Detect the faces
-            faces = self.face_classifier.detectMultiScale(gray, 1.1, 4)
+            faces = self.face_classifier.detectMultiScale(gray, self.SCALE_FACTOR, self.MIN_NEIGHBORS)
             # Draw the rectangle around each face
             if faces != ():
                 for (x, y, w, h) in faces:
-                    cv.rectangle(self.img, (x, y), (x+w, y+h), BLUE, 2)
+                    cv.rectangle(self.img, (x, y), (x+w, y+h), BLUE, self.LINE_THICKNESS)
                     if w*h > biggest_face_area:
                         self.face_found = True
                         #biggest_face = (x, y, w, h)
@@ -164,8 +172,8 @@ class FaceTracker():
     START_Y = 5
     MAX_X = 90
     MAX_Y = 45
-    MOVE_X = 4
-    MOVE_Y = 2
+    MOVE_X = 5
+    MOVE_Y = 5
     SPEED = 25
         
     def __init__(self):
