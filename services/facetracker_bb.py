@@ -107,8 +107,8 @@ class Camera(WebcamVideoStream):
                     if found_area > biggest_area:   # Check if it has the biggest area
                         biggest_area = found_area   # If bigger then update biggest_area
                         (mx, my, mw, mh) = cv.boundingRect(c)    # get motion contour data
-                self.motion_center_x = int(mx + mw/2)
-                self.motion_center_y = int(my + mh/2)
+                        self.motion_center_x = int(mx + mw/2)
+                        self.motion_center_y = int(my + mh/2)
                 print("detect_motion - Found Motion at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (int(mx + mw/2), int(my + mh/2), mw, mh, biggest_area))
             else:
                 print("detect_motion - No Motion Found")
@@ -185,7 +185,6 @@ class FaceTracker():
         while not self.camera.stopped:
             
             self.camera.img = self.camera.read()
-            print(self.camera.img)
             self.camera.detect_face()
             if self.camera.face_found:
                 if self.debug:
