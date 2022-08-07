@@ -162,6 +162,8 @@ class FaceTracker():
 
     START_X = 0
     START_Y = 5
+    MAX_X = 45
+    MAX_Y = 30
     MOVE_X = 2
     MOVE_Y = 1
     SPEED = 25
@@ -178,7 +180,7 @@ class FaceTracker():
 
         # Initialize the gimbal
         print("initialize - Initializing gimbal")
-        self.gimbal = Gimbal(self.PAN_PIN,self.TILT_PIN)
+        self.gimbal = Gimbal(self.PAN_PIN,self.TILT_PIN,max_pan = self.MAX_X, max_tilt = self.MAX_Y)
         self.gimbal.pan_goto(self.START_X,self.START_Y)
 
         # Initialize the camera
