@@ -210,7 +210,7 @@ class FaceTracker():
                 else:
                     if self.debug:
                         print("track_face - No motion found, beginning pan search")
-                    self.gimbal.pan_search(self.MOVE_X,self.MOVE_Y)
+                    self.gimbal.pan_search(self.MOVE_X,self.MOVE_Y, self.SPEED)
                     if self.debug:
                         print(f"track_face - Panned to ({self.gimbal.x},{self.gimbal.y})")
             
