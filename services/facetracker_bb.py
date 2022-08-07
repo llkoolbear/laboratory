@@ -56,7 +56,7 @@ class Camera(WebcamVideoStream):
     # OpenCv Face Detection
     LINE_THICKNESS = 2
     SCALE_FACTOR = 1.2
-    MIN_NEIGHBORS = 6
+    MIN_NEIGHBORS = 5
  
 
     def __init__(self, src=CAMERA_SRC):
