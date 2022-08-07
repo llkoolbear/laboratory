@@ -89,36 +89,12 @@ class Gimbal(device.Device):
             y = self.min_y
         elif y > self.max_y:
             y = self.max_y
+            
+        self.pan.guide_to_angle(x + self.pan.attributes.mid_angle, speed)
+        self.tilt.guide_to_angle(y + self.tilt.attributes.mid_angle, speed)
 
-        if abs(self.x-x) > abs(self.y-y):
-            x_retard = 1
-            y_retard = abs((self.y-y)/(self.x-x))
-        elif abs(self.x-x) < abs(self.y-y):
-            x_retard = abs((self.x-x)/(self.y-y))
-            y_retard = 1
-        else:
-            x_retard = 1
-            y_retard = 1
-        print(x_retard,y_retard)
-        print(self.x,self.y)    
-        print(x, y)
-        while self.x != x or self.y != y:
-            if abs(self.x-x) < speed*self.pan.delay:
-                set_x = x
-            elif self.x < x:
-                set_x = self.x+speed*self.pan.delay*x_retard
-            elif self.x > x:
-                set_x = self.x-speed*self.pan.delay*x_retard
-
-            if abs(self.y-y) < speed*self.tilt.delay:
-                set_y = y
-            elif self.y < y:
-                set_y = self.y+speed*self.tilt.delay*y_retard
-            elif self.y > y:
-                set_y = self.y-speed*self.tilt.delay*y_retard
-            print(set_x, set_y)
-            self.pan_goto(set_x, set_y)
-            print(self.x,self.y)    
+        self.x = x
+        self.y = y
 
     def pan_search(self, move_x, move_y, speed):
         pan_dx = self.x + move_x
