@@ -85,69 +85,70 @@ class Camera(WebcamVideoStream):
         cv.destroyAllWindows()
 
     def detect_motion(self):
-
-        # Convert frame to grayscale
-        gray_img_1 = cv.cvtColor(self.frame, cv.COLOR_BGR2GRAY)
-        gray_img_2 = cv.cvtColor(self.previous_frame, cv.COLOR_BGR2GRAY)
-        biggest_area = self.MIN_AREA
-        # Process images to see if there is motion
-        differenceimage = cv.absdiff(gray_img_1, gray_img_2)
-        differenceimage = cv.blur(differenceimage, (self.BLUR_SIZE,self.BLUR_SIZE))
-        # Get threshold of difference image based on THRESHOLD_SENSITIVITY variable
-        retval, thresholdimage = cv.threshold(differenceimage, self.THRESHOLD_SENSITIVITY, 255, cv.THRESH_BINARY)
-        # Get all the contours found in the thresholdimage
-        try:
-            thresholdimage, contours, hierarchy = cv.findContours( thresholdimage, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE )
-        except:
-            contours, hierarchy = cv.findContours( thresholdimage, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE )  
-        if contours != ():    # Check if Motion Found
-            self.motion_found = True
-            for c in contours:
-                found_area = cv.contourArea(c) # Get area of current contour
-                if found_area > biggest_area:   # Check if it has the biggest area
-                    biggest_area = found_area   # If bigger then update biggest_area
-                    (mx, my, mw, mh) = cv.boundingRect(c)    # get motion contour data
-            self.motion_center_x = int(mx + mw/2)
-            self.motion_center_y = int(my + mh/2)
-            print("detect_motion - Found Motion at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (int(mx + mw/2), int(my + mh/2), mw, mh, biggest_area))
-        else:
-            print("detect_motion - No Motion Found")
-            self.motion_found = False
-            self.motion_center_x = None
-            self.motion_center_y = None
+        if self.frame is not None and self.previous_frame is not None:
+            # Convert frame to grayscale
+            gray_img_1 = cv.cvtColor(self.frame, cv.COLOR_BGR2GRAY)
+            gray_img_2 = cv.cvtColor(self.previous_frame, cv.COLOR_BGR2GRAY)
+            biggest_area = self.MIN_AREA
+            # Process images to see if there is motion
+            differenceimage = cv.absdiff(gray_img_1, gray_img_2)
+            differenceimage = cv.blur(differenceimage, (self.BLUR_SIZE,self.BLUR_SIZE))
+            # Get threshold of difference image based on THRESHOLD_SENSITIVITY variable
+            retval, thresholdimage = cv.threshold(differenceimage, self.THRESHOLD_SENSITIVITY, 255, cv.THRESH_BINARY)
+            # Get all the contours found in the thresholdimage
+            try:
+                thresholdimage, contours, hierarchy = cv.findContours( thresholdimage, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE )
+            except:
+                contours, hierarchy = cv.findContours( thresholdimage, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE )  
+            if contours != ():    # Check if Motion Found
+                self.motion_found = True
+                for c in contours:
+                    found_area = cv.contourArea(c) # Get area of current contour
+                    if found_area > biggest_area:   # Check if it has the biggest area
+                        biggest_area = found_area   # If bigger then update biggest_area
+                        (mx, my, mw, mh) = cv.boundingRect(c)    # get motion contour data
+                self.motion_center_x = int(mx + mw/2)
+                self.motion_center_y = int(my + mh/2)
+                print("detect_motion - Found Motion at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (int(mx + mw/2), int(my + mh/2), mw, mh, biggest_area))
+            else:
+                print("detect_motion - No Motion Found")
+                self.motion_found = False
+                self.motion_center_x = None
+                self.motion_center_y = None
 
     def detect_face(self):
         biggest_face = None
         biggest_face_area = 0
-        gray = cv.cvtColor(self.frame, cv.COLOR_BGR2GRAY)
-        # Detect the faces
-        faces = self.face_classifier.detectMultiScale(gray, 1.1, 4)
-        # Draw the rectangle around each face
-        if faces != ():
-            self.face_found = True
-            for (x, y, w, h) in faces:
-                cv.rectangle(self.frame, (x, y), (x+w, y+h), BLUE, 2)
-                if w*h > biggest_face_area:
-                    biggest_face = (x, y, w, h)
-                    biggest_face_area = w*h
-            (self.face_corner_x, self.face_corner_y, self.face_width, self.face_height) = biggest_face
-            self.face_center_x = int(self.face_corner_x + self.face_width/2)
-            self.face_center_y = int(self.face_corner_y + self.face_height/2)
-            self.face_area = self.face_width*self.face_height
-            cv.rectangle(self.frame, (self.face_corner_x, self.face_corner_y), (self.face_corner_x+self.face_width, self.face_corner_y+self.face_height), GREEN, 2)
+        if self.frame is not None:
+            gray = cv.cvtColor(self.frame, cv.COLOR_BGR2GRAY)
+            # Detect the faces
+            faces = self.face_classifier.detectMultiScale(gray, 1.1, 4)
+            # Draw the rectangle around each face
+            if faces != ():
+                self.face_found = True
+                for (x, y, w, h) in faces:
+                    cv.rectangle(self.frame, (x, y), (x+w, y+h), BLUE, 2)
+                    if w*h > biggest_face_area:
+                        biggest_face = (x, y, w, h)
+                        biggest_face_area = w*h
+                (self.face_corner_x, self.face_corner_y, self.face_width, self.face_height) = biggest_face
+                self.face_center_x = int(self.face_corner_x + self.face_width/2)
+                self.face_center_y = int(self.face_corner_y + self.face_height/2)
+                self.face_area = self.face_width*self.face_height
+                cv.rectangle(self.frame, (self.face_corner_x, self.face_corner_y), (self.face_corner_x+self.face_width, self.face_corner_y+self.face_height), GREEN, 2)
 
-            print("detect_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % 
-                (self.face_center_x, self.face_center_y, self.face_width, self.face_height, self.face_area))
-        else:
-            print("detect_face - No Face Found")
-            self.face_found = False
-            self.face_corner_x = None
-            self.face_corner_y = None
-            self.face_center_x = None
-            self.face_center_y = None
-            self.face_width = None
-            self.face_height = None
-            self.face_area = None
+                print("detect_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % 
+                    (self.face_center_x, self.face_center_y, self.face_width, self.face_height, self.face_area))
+            else:
+                print("detect_face - No Face Found")
+                self.face_found = False
+                self.face_corner_x = None
+                self.face_corner_y = None
+                self.face_center_x = None
+                self.face_center_y = None
+                self.face_width = None
+                self.face_height = None
+                self.face_area = None
 class FaceTracker():
 
     PAN_PIN = 17 #11
