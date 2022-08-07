@@ -40,17 +40,12 @@ class Camera(WebcamVideoStream):
     CAMERA_HEIGHT = 480    
     CAMERA_CENTER_X = int(CAMERA_WIDTH/2)
     CAMERA_CENTER_Y = int(CAMERA_HEIGHT/2)
-    PIXELS_PER_DEGREE_X = CAMERA_WIDTH/60
-    PIXELS_PER_DEGREE_Y = CAMERA_HEIGHT/30
+    PIXELS_PER_DEGREE_X = CAMERA_WIDTH/30
+    PIXELS_PER_DEGREE_Y = CAMERA_HEIGHT/15
 
     CAMERA_FRAMERATE = 30
     CAMERA_HFLIP = True    
-    CAMERA_VFLIP = False
-
-    # OpenCV Motion Tracking Settings
-    MIN_AREA = 2000       # sq pixels - exclude all motion contours less than or equal to this Area
-    THRESHOLD_SENSITIVITY = 25
-    BLUR_SIZE = 10    
+    CAMERA_VFLIP = False 
 
     def __init__(self, src=CAMERA_SRC):
         super().__init__(src)
@@ -59,6 +54,38 @@ class Camera(WebcamVideoStream):
         self.stream.set(cv.CAP_PROP_FRAME_HEIGHT, self.CAMERA_HEIGHT)
         # Set the camera frame rate to 30fps
         self.stream.set(cv.CAP_PROP_FPS, self.CAMERA_FRAMERATE)
+
+    def stop_camera(self):
+        self.stop()
+        cv.destroyAllWindows()
+
+class FaceTracker():
+
+    PAN_PIN = 17 #11
+    TILT_PIN = 27 #13
+    CAM_SRC = 0
+
+    START_X = 0
+    START_Y = 5
+    MOVE_X = 2
+    MOVE_Y = 1
+
+    # OpenCV Motion Tracking Settings
+    MIN_AREA = 2000       # sq pixels - exclude all motion contours less than or equal to this Area
+    THRESHOLD_SENSITIVITY = 25
+    BLUR_SIZE = 10   
+    
+        
+    def __init__(self):
+
+        # Display Settings
+        self.debug = True        # Set to False for no data display
+        self.verbose = True      # Add extra detailed information
+        self.show_fps = True     # show frames per second processing speed
+        self.window_on = True   # Set to True displays opencv windows (GUI desktop reqd)
+        self.diff_window_on = False  # Show OpenCV image difference window
+        self.thresh_window_on = False  # Show OpenCV image Threshold window
+
         self.img = None
         self.previous_img = None
 
@@ -80,9 +107,15 @@ class Camera(WebcamVideoStream):
         frontal_face_model = models_path + 'haarcascade_frontalface_default.xml'
         self.face_classifier = cv.CascadeClassifier(frontal_face_model)
 
-    def stop_camera(self):
-        self.stop()
-        cv.destroyAllWindows()
+        # Initialize the gimbal
+        print("initialize - Initializing gimbal")
+        self.gimbal = Gimbal(self.PAN_PIN,self.TILT_PIN)
+        self.gimbal.pan_goto(self.START_X,self.START_Y)
+
+        # Initialize the camera
+        print("initialize - Initializing camera")
+        self.camera = Camera(self.CAM_SRC)
+        self.camera.start()
 
     def detect_motion(self):
         self.motion_found = False
@@ -103,7 +136,7 @@ class Camera(WebcamVideoStream):
                 thresholdimage, contours, hierarchy = cv.findContours( thresholdimage, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE )
             except:
                 contours, hierarchy = cv.findContours( thresholdimage, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE )  
-            if contours != ():    # Check if Motion Found
+            if contours is not ():    # Check if Motion Found
                 self.motion_found = True
                 for c in contours:
                     found_area = cv.contourArea(c) # Get area of current contour
@@ -134,7 +167,7 @@ class Camera(WebcamVideoStream):
             # Detect the faces
             faces = self.face_classifier.detectMultiScale(gray, 1.1, 4)
             # Draw the rectangle around each face
-            if faces != ():
+            if faces is not ():
                 self.face_found = True
                 for (x, y, w, h) in faces:
                     cv.rectangle(self.img, (x, y), (x+w, y+h), BLUE, 2)
@@ -155,56 +188,26 @@ class Camera(WebcamVideoStream):
             else:
                 print("detect_face - No Face Found")
         print('detect_face - No Images Found')
-class FaceTracker():
-
-    PAN_PIN = 17 #11
-    TILT_PIN = 27 #13
-    CAM_SRC = 0
-
-    START_X = 0
-    START_Y = 5
-    MOVE_X = 2
-    MOVE_Y = 1
-        
-    def __init__(self):
-
-        # Display Settings
-        self.debug = True        # Set to False for no data display
-        self.verbose = True      # Add extra detailed information
-        self.show_fps = True     # show frames per second processing speed
-        self.window_on = True   # Set to True displays opencv windows (GUI desktop reqd)
-        self.diff_window_on = False  # Show OpenCV image difference window
-        self.thresh_window_on = False  # Show OpenCV image Threshold window
-
-        # Initialize the gimbal
-        print("initialize - Initializing gimbal")
-        self.gimbal = Gimbal(self.PAN_PIN,self.TILT_PIN)
-        self.gimbal.pan_goto(self.START_X,self.START_Y)
-
-        # Initialize the camera
-        print("initialize - Initializing camera")
-        self.camera = Camera(self.CAM_SRC)
-        self.camera.start()
 
     def track_face(self):
 
         while not self.camera.stopped:
             
-            self.camera.img = self.camera.read()
-            self.camera.detect_face()
-            if self.camera.face_found:
+            self.img = self.camera.read()
+            self.detect_face()
+            if self.face_found:
                 if self.debug:
-                    print("track_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (self.camera.face_center_x, self.camera.face_center_y, self.camera.face_width, self.camera.face_height, self.camera.face_area))
-                self.pan_to_pixel(self.camera.face_center_x, self.camera.face_center_y)
+                    print("track_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (self.face_center_x, self.face_center_y, self.face_width, self.face_height, self.face_area))
+                self.pan_to_pixel(self.face_center_x, self.face_center_y)
                 if self.debug:
                     print(f"track_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
             else:
                 print("track_face - No Face Found, Looking for Motion")
-                self.camera.detect_motion()
-                if self.camera.motion_found:
+                self.detect_motion()
+                if self.motion_found:
                     if self.debug:
-                        print(f"track_face - Motion found at ({self.camera.motion_center_x},{self.camera.motion_center_x}) pixels")
-                    self.pan_to_pixel(self.camera.motion_center_x, self.camera.motion_center_y)
+                        print(f"track_face - Motion found at ({self.motion_center_x},{self.motion_center_x}) pixels")
+                    self.pan_to_pixel(self.motion_center_x, self.motion_center_y)
                     if self.debug:
                         print(f"track_face - Panned to ({self.gimbal.x},{self.gimbal.y})")
                 else:
@@ -216,9 +219,9 @@ class FaceTracker():
             
             if cv.waitKey(1) == ord('q'):
                 break
-            if self.camera.img is not None:
-                cv.imshow('img', self.camera.img)
-                self.camera.previous_img = self.camera.img  # set previous frame for next iteration
+            if self.img is not None:
+                cv.imshow('img', self.img)
+                self.previous_img = self.img  # set previous frame for next iteration
 
     def pan_to_pixel(self, pixel_x, pixel_y):
         pan_dx = int((self.camera.CAMERA_CENTER_X - pixel_x) / self.camera.PIXELS_PER_DEGREE_X)
@@ -280,7 +283,7 @@ def face_track(gimbal, camera):
             grayimage2 = cv.cvtColor(img_frame, cv.COLOR_BGR2GRAY)
             motion_center = motion_detect(grayimage1, grayimage2)
             grayimage1 = grayimage2  # Reset grayimage1 for next loop
-            if motion_center != ():
+            if motion_center is not ():
                 motion_found = True
                 cx = motion_center[0]
                 cy = motion_center[1]
@@ -300,7 +303,7 @@ def face_track(gimbal, camera):
         elif check_timer(face_start, timer_face):
             # Search for Face if no motion detected for a specified time period
             face_data = face_detect(img_frame)
-            if face_data != ():
+            if face_data is not ():
                 face_found = True
                 (fx, fy, fw, fh) = face_data
                 cx = int(fx + fw/2)
