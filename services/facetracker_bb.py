@@ -119,7 +119,7 @@ class Camera(WebcamVideoStream):
     def detect_face(self):
         biggest_face = None
         biggest_face_area = 0
-        if self.img != None:
+        if self.img is not None:
             gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
             # Detect the faces
             faces = self.face_classifier.detectMultiScale(gray, 1.1, 4)
