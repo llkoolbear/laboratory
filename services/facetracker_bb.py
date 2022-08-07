@@ -57,7 +57,6 @@ class Camera(WebcamVideoStream):
     LINE_THICKNESS = 2
     SCALE_FACTOR = 1.2
     MIN_NEIGHBORS = 5
- 
 
     def __init__(self, src=CAMERA_SRC):
         super().__init__(src)
@@ -86,8 +85,6 @@ class Camera(WebcamVideoStream):
         models_path = '/home/bearbissen/repos/opencv/data/haarcascades/'
         frontal_face_model = models_path + 'haarcascade_frontalface_default.xml'
         self.face_classifier = cv.CascadeClassifier(frontal_face_model)
-
-        
 
     def stop_camera(self):
         self.stop()
@@ -188,6 +185,9 @@ class FaceTracker():
         self.diff_window_on = False  # Show OpenCV image difference window
         self.thresh_window_on = False  # Show OpenCV image Threshold window
 
+        self.heading_x = 0
+        self.heading_y = 0
+
         # Initialize the gimbal
         print("initialize - Initializing gimbal")
         self.gimbal = Gimbal(self.PAN_PIN,self.TILT_PIN,max_pan = self.MAX_X, max_tilt = self.MAX_Y)
@@ -228,7 +228,8 @@ class FaceTracker():
                 '''
             if self.debug:
                 print("track_face - No motion found, beginning pan search")
-            self.gimbal.pan_search(self.MOVE_X,self.MOVE_Y, self.SPEED)
+                self.update_heading()
+                self.head_to_heading()
             if self.debug:
                 print(f"track_face - Panned to ({self.gimbal.x},{self.gimbal.y})")
             
@@ -242,6 +243,36 @@ class FaceTracker():
         pan_dx = int((self.camera.CAMERA_CENTER_X - pixel_x) / self.camera.PIXELS_PER_DEGREE_X)
         pan_dy = int((self.camera.CAMERA_CENTER_Y - pixel_y) / self.camera.PIXELS_PER_DEGREE_Y)
         self.gimbal.guide_to_position(self.gimbal.x+pan_dx, self.gimbal.y-pan_dy, self.SPEED)
+
+    def update_heading(self):
+        if self.heading_x is self.gimbal.x:
+            self.heading_x = self.heading_x + self.MOVE_X
+            if self.heading_x > self.gimbal.max_x:
+                self.heading_x = self.gimbal.min_x
+
+        if self.heading_y is self.gimbal.y:
+            self.heading_y = self.START_Y
+            
+    def head_to_heading(self):
+
+        diff_x = self.heading_x - self.gimbal.x
+        diff_y = self.heading_y - self.gimbal.y
+
+        if abs(diff_x) < self.MOVE_X or diff_x == 0:
+            head_x = self.heading_x
+        elif diff_x > 0:
+            head_x = self.gimbal.x + self.MOVE_X
+        elif diff_x < 0:
+            head_x = self.gimbal.x - self.MOVE_X
+        
+        if abs(diff_y) < self.MOVE_Y or diff_y == 0:
+            head_y = self.heading_y
+        elif diff_y > 0:
+            head_y = self.gimbal.y + self.MOVE_Y
+        elif diff_y < 0:
+            head_y = self.gimbal.y - self.MOVE_Y
+        
+        self.gimbal.guide_to_position(head_x, head_y, self.SPEED)
 
     def stop_track(self):
         self.camera.stop_camera()
