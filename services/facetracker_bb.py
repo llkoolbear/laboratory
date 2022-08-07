@@ -40,8 +40,8 @@ class Camera(WebcamVideoStream):
     CAMERA_HEIGHT = 480    
     CAMERA_CENTER_X = int(CAMERA_WIDTH/2)
     CAMERA_CENTER_Y = int(CAMERA_HEIGHT/2)
-    PIXELS_PER_DEGREE_X = CAMERA_WIDTH/90
-    PIXELS_PER_DEGREE_Y = CAMERA_HEIGHT/90
+    PIXELS_PER_DEGREE_X = CAMERA_WIDTH/60
+    PIXELS_PER_DEGREE_Y = CAMERA_HEIGHT/30
 
     CAMERA_FRAMERATE = 30
     CAMERA_HFLIP = True    
@@ -160,8 +160,8 @@ class FaceTracker():
 
     START_X = 0
     START_Y = 5
-    MOVE_X = 5
-    MOVE_Y = 2.5
+    MOVE_X = 2
+    MOVE_Y = 1
         
     def __init__(self):
 
