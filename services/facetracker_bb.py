@@ -206,7 +206,7 @@ class FaceTracker():
 
     def track_face(self):
 
-        while not self.camera.stopped():
+        while not self.camera.stopped:
             self.camera.img = self.camera.read()
             if self.camera.img is not None:
                 if not self.camera.face_tracked:
