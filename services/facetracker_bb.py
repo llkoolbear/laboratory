@@ -169,10 +169,10 @@ class FaceTracker():
 
     START_X = 0
     START_Y = 5
-    MAX_X = 90
+    MAX_X = 60
     MAX_Y = 45
-    MOVE_X = 5
-    MOVE_Y = 5
+    MOVE_X = 2
+    MOVE_Y = 2
     SPEED = 25
         
     def __init__(self):
