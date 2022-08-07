@@ -85,7 +85,7 @@ class Camera(WebcamVideoStream):
         cv.destroyAllWindows()
 
     def detect_motion(self):
-        if self.img != None and self.previous_img != None:
+        if self.img is not None and self.previous_img is not None:
             # Convert frame to grayscale
             gray_img_1 = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
             gray_img_2 = cv.cvtColor(self.previous_img, cv.COLOR_BGR2GRAY)
@@ -195,7 +195,7 @@ class FaceTracker():
                     print(f"track_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
             else:
                 print("track_face - No Face Found, Looking for Motion")
-                if self.camera.previous_img != None:
+                if self.camera.previous_img is not None:
                     self.camera.detect_motion()
                 if self.camera.motion_found:
                     if self.debug:
@@ -212,7 +212,7 @@ class FaceTracker():
             
             if cv.waitKey(1) == ord('q'):
                 break
-            if self.camera.img != None:
+            if self.camera.img is not None:
                 cv.imshow('img', self.camera.img)
                 self.camera.previous_img = self.camera.img  # set previous frame for next iteration
 
