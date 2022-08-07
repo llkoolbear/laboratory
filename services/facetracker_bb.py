@@ -58,6 +58,8 @@ class Camera(WebcamVideoStream):
     SCALE_FACTOR = 1.2
     MIN_NEIGHBORS = 5
 
+    MAX_FACES_LOST = 5
+
     def __init__(self, src=CAMERA_SRC):
         super().__init__(src)
         # Set the camera resolution to 640x480
@@ -73,6 +75,8 @@ class Camera(WebcamVideoStream):
         self.motion_center_y = None
 
         self.face_found = False
+        self.face_tracked = False
+        self.face_lost = 0
         self.face_corner_x = None
         self.face_corner_y = None
         self.face_center_x = None
@@ -145,6 +149,7 @@ class Camera(WebcamVideoStream):
                     cv.rectangle(self.img, (x, y), (x+w, y+h), BLUE, self.LINE_THICKNESS)
                     if w*h > biggest_face_area:
                         self.face_found = True
+                        self.face_tracked = True
                         #biggest_face = (x, y, w, h)
                         biggest_face_area = w*h
                         #(self.face_corner_x, self.face_corner_y, self.face_width, self.face_height) = biggest_face
@@ -201,45 +206,63 @@ class FaceTracker():
 
     def track_face(self):
 
-        while not self.camera.stopped:
-            
+        while not self.camera.stopped():
             self.camera.img = self.camera.read()
             if self.camera.img is not None:
-                self.camera.detect_face()
-                if self.camera.face_found:
-                    if self.debug:
-                        print("track_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (self.camera.face_center_x, self.camera.face_center_y, self.camera.face_width, self.camera.face_height, self.camera.face_area))
-                    self.pan_to_pixel(self.camera.face_center_x, self.camera.face_center_y)
-                    if self.debug:
-                        print(f"track_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
+                if not self.camera.face_tracked:
+                    self.find_face()
                 else:
-                    '''
-                    print("track_face - No Face Found, Looking for Motion")
-                    if self.camera.img is not None:
-                        cv.imshow('img', self.camera.img)
-                        self.camera.previous_img = self.camera.img  # set previous frame for next iteration
-                        self.camera.img = self.camera.read()
-                    self.camera.detect_motion()
-                    if self.camera.motion_found:
-                        if self.debug:
-                            print(f"track_face - Motion found at ({self.camera.motion_center_x},{self.camera.motion_center_x}) pixels")
-                        self.pan_to_pixel(self.camera.motion_center_x, self.camera.motion_center_y)
-                        if self.debug:
-                            print(f"track_face - Panned to ({self.gimbal.x},{self.gimbal.y})")
-                    else:
-                    '''
-                    if self.debug:
-                        print("track_face - No motion found, beginning pan search")
-                    self.update_heading()
-                    self.head_to_heading()
-                    if self.debug:
-                        print(f"track_face - Panned to ({self.gimbal.x},{self.gimbal.y})")
+                    self.follow_face()
                 cv.imshow('img', self.camera.img)
                 self.camera.previous_img = self.camera.img  # set previous frame for next iteration
-            if cv.waitKey(1) == ord('q'):
-                break
-                
+            
+    def find_face(self):
+        self.camera.detect_face()
+        if self.camera.face_found:
+            if self.debug:
+                print("track_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (self.camera.face_center_x, self.camera.face_center_y, self.camera.face_width, self.camera.face_height, self.camera.face_area))
+            self.pan_to_pixel(self.camera.face_center_x, self.camera.face_center_y)
+            if self.debug:
+                print(f"track_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
+            return
+        else:
+            '''
+            print("track_face - No Face Found, Looking for Motion")
+            if self.camera.img is not None:
+                cv.imshow('img', self.camera.img)
+                self.camera.previous_img = self.camera.img  # set previous frame for next iteration
+                self.camera.img = self.camera.read()
+            self.camera.detect_motion()
+            if self.camera.motion_found:
+                if self.debug:
+                    print(f"track_face - Motion found at ({self.camera.motion_center_x},{self.camera.motion_center_x}) pixels")
+                self.pan_to_pixel(self.camera.motion_center_x, self.camera.motion_center_y)
+                if self.debug:
+                    print(f"track_face - Panned to ({self.gimbal.x},{self.gimbal.y})")
+            else:
+            '''
+            if self.debug:
+                print("track_face - No motion found, beginning pan search")
+            self.update_heading()
+            self.head_to_heading()
+            if self.debug:
+                print(f"track_face - Panned to ({self.gimbal.x},{self.gimbal.y})")
 
+    def follow_face(self):
+
+        self.camera.detect_face()
+        if self.camera.face_found:
+            if self.debug:
+                print("track_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (self.camera.face_center_x, self.camera.face_center_y, self.camera.face_width, self.camera.face_height, self.camera.face_area))
+            self.pan_to_pixel(self.camera.face_center_x, self.camera.face_center_y)
+            if self.debug:
+                print(f"track_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
+            self.camera.face_lost = 0
+        else:
+            self.camera.face_lost +=1
+            if self.camera.face_lost > self.camera.MAX_FACES_LOST:
+                self.camera.face_tracked == False
+                
     def pan_to_pixel(self, pixel_x, pixel_y):
         pan_dx = int((self.camera.CAMERA_CENTER_X - pixel_x) / self.camera.PIXELS_PER_DEGREE_X)
         pan_dy = int((self.camera.CAMERA_CENTER_Y - pixel_y) / self.camera.PIXELS_PER_DEGREE_Y)
