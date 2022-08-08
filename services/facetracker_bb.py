@@ -58,7 +58,7 @@ class Camera(WebcamVideoStream):
     SCALE_FACTOR = 1.2
     MIN_NEIGHBORS = 5
 
-    MAX_FACES_LOST = 5
+    MAX_FACES_LOST = 10
 
     def __init__(self, src=CAMERA_SRC):
         super().__init__(src)
