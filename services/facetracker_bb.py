@@ -214,17 +214,16 @@ class FaceTracker():
                 else:
                     self.follow_face()
                 self.camera.previous_img = self.camera.img  # set previous frame for next iteration
-            cv.imshow('img', self.camera.img)
+                cv.imshow('img', self.camera.img)
 
     def find_face(self):
         self.camera.detect_face()
         if self.camera.face_found:
             if self.debug:
-                print("track_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (self.camera.face_center_x, self.camera.face_center_y, self.camera.face_width, self.camera.face_height, self.camera.face_area))
+                print("find_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (self.camera.face_center_x, self.camera.face_center_y, self.camera.face_width, self.camera.face_height, self.camera.face_area))
             self.pan_to_pixel(self.camera.face_center_x, self.camera.face_center_y)
             if self.debug:
-                print(f"track_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
-            return
+                print(f"find_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
         else:
             '''
             print("track_face - No Face Found, Looking for Motion")
@@ -253,15 +252,16 @@ class FaceTracker():
         self.camera.detect_face()
         if self.camera.face_found:
             if self.debug:
-                print("track_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (self.camera.face_center_x, self.camera.face_center_y, self.camera.face_width, self.camera.face_height, self.camera.face_area))
+                print("follow_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (self.camera.face_center_x, self.camera.face_center_y, self.camera.face_width, self.camera.face_height, self.camera.face_area))
             self.pan_to_pixel(self.camera.face_center_x, self.camera.face_center_y)
             if self.debug:
-                print(f"track_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
+                print(f"follow_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
             self.camera.face_lost = 0
         else:
-            self.camera.face_lost +=1
-            if self.camera.face_lost > self.camera.MAX_FACES_LOST:
+            self.camera.face_lost = self.camera.face_lost + 1
+            if self.camera.face_lost >= self.camera.MAX_FACES_LOST:
                 self.camera.face_tracked == False
+                self.camera.face_lost = 0
                 
     def pan_to_pixel(self, pixel_x, pixel_y):
         pan_dx = int((self.camera.CAMERA_CENTER_X - pixel_x) / self.camera.PIXELS_PER_DEGREE_X)
