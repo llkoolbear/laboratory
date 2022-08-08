@@ -213,7 +213,6 @@ class FaceTracker():
                 else:
                     self.follow_face()
                 self.camera.previous_img = self.camera.img  # set previous frame for next iteration
-                print("is image showing")
                 cv.imshow('img', self.camera.img)
                 cv.waitKey(1)
 
@@ -260,8 +259,10 @@ class FaceTracker():
                 print(f"follow_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
             self.camera.face_lost = 0
         else:
+            print("follow_face - No Face Found, processing next image")
             self.camera.face_lost = self.camera.face_lost + 1
             if self.camera.face_lost >= self.camera.MAX_FACES_LOST:
+                print("follow_face - Face Lost, searching for new face")
                 self.camera.face_tracked = False
                 self.camera.face_lost = 0
                 
