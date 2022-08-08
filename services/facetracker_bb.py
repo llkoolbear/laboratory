@@ -271,13 +271,13 @@ class FaceTracker():
                 if self.debug:
                     print(f"follow_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
                 self.camera.face_lost = 0
-
-            print("follow_face - No Face Found, processing next image")
-            self.camera.face_lost = self.camera.face_lost + 1
-            if self.camera.face_lost >= self.camera.MAX_FACES_LOST:
-                print("follow_face - Face Lost, searching for new face")
-                self.camera.face_tracked = False
-                self.camera.face_lost = 0
+            else:
+                print("follow_face - No Face Found, processing next image")
+                self.camera.face_lost = self.camera.face_lost + 1
+                if self.camera.face_lost >= self.camera.MAX_FACES_LOST:
+                    print("follow_face - Face Lost, searching for new face")
+                    self.camera.face_tracked = False
+                    self.camera.face_lost = 0
                 
     def pan_to_pixel(self, pixel_x, pixel_y):
         pan_dx = int((self.camera.CAMERA_CENTER_X - pixel_x) / self.camera.PIXELS_PER_DEGREE_X)
