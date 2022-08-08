@@ -266,7 +266,7 @@ class FaceTracker():
             self.camera.detect_face(self.camera.profile_classifier)
             if self.camera.face_found:
                 if self.debug:
-                    print("follow_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (self.camera.face_center_x, self.camera.face_center_y, self.camera.face_width, self.camera.face_height, self.camera.face_area))
+                    print("follow_face - Found Profile at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (self.camera.face_center_x, self.camera.face_center_y, self.camera.face_width, self.camera.face_height, self.camera.face_area))
                 self.pan_to_pixel(self.camera.face_center_x, self.camera.face_center_y)
                 if self.debug:
                     print(f"follow_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
