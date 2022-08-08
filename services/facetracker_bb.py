@@ -144,12 +144,11 @@ class Camera(WebcamVideoStream):
             # Detect the faces
             faces = self.face_classifier.detectMultiScale(gray, self.SCALE_FACTOR, self.MIN_NEIGHBORS)
             # Draw the rectangle around each face
-            if faces != ():
+            if faces is not ():
                 for (x, y, w, h) in faces:
                     cv.rectangle(self.img, (x, y), (x+w, y+h), BLUE, self.LINE_THICKNESS)
                     if w*h > biggest_face_area:
                         self.face_found = True
-                        self.face_tracked = True
                         #biggest_face = (x, y, w, h)
                         biggest_face_area = w*h
                         #(self.face_corner_x, self.face_corner_y, self.face_width, self.face_height) = biggest_face
@@ -221,6 +220,7 @@ class FaceTracker():
         if self.camera.face_found:
             if self.debug:
                 print("find_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (self.camera.face_center_x, self.camera.face_center_y, self.camera.face_width, self.camera.face_height, self.camera.face_area))
+            self.face_tracked = True
             self.pan_to_pixel(self.camera.face_center_x, self.camera.face_center_y)
             if self.debug:
                 print(f"find_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
@@ -260,7 +260,7 @@ class FaceTracker():
         else:
             self.camera.face_lost = self.camera.face_lost + 1
             if self.camera.face_lost >= self.camera.MAX_FACES_LOST:
-                self.camera.face_tracked == False
+                self.camera.face_tracked = False
                 self.camera.face_lost = 0
                 
     def pan_to_pixel(self, pixel_x, pixel_y):
