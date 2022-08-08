@@ -221,7 +221,7 @@ class FaceTracker():
         if self.camera.face_found:
             if self.debug:
                 print("find_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (self.camera.face_center_x, self.camera.face_center_y, self.camera.face_width, self.camera.face_height, self.camera.face_area))
-            self.face_tracked = True
+            self.camera.face_tracked = True
             self.pan_to_pixel(self.camera.face_center_x, self.camera.face_center_y)
             if self.debug:
                 print(f"find_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
