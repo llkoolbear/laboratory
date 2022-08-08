@@ -173,7 +173,7 @@ class FaceTracker():
     CAM_SRC = 0
 
     START_X = 0
-    START_Y = -35
+    START_Y = -30
     MAX_X = 60
     MAX_Y = 45
     MOVE_X = 2
@@ -213,6 +213,7 @@ class FaceTracker():
                 else:
                     self.follow_face()
                 self.camera.previous_img = self.camera.img  # set previous frame for next iteration
+                print("is image showing")
                 cv.imshow('img', self.camera.img)
 
     def find_face(self):
