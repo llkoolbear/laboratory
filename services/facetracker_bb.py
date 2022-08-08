@@ -58,7 +58,7 @@ class Camera(WebcamVideoStream):
     SCALE_FACTOR = 1.2
     MIN_NEIGHBORS = 5
 
-    MAX_FACES_LOST = 10
+    MAX_FACES_LOST = 20
 
     def __init__(self, src=CAMERA_SRC):
         super().__init__(src)
@@ -88,7 +88,9 @@ class Camera(WebcamVideoStream):
         # Load the cascade model
         models_path = '/home/bearbissen/repos/opencv/data/haarcascades/'
         frontal_face_model = models_path + 'haarcascade_frontalface_default.xml'
+        profile_face_model = models_path + 'haarcascade_profileface.xml'
         self.face_classifier = cv.CascadeClassifier(frontal_face_model)
+        self.profile_classifier = cv.CascadeClassifier(profile_face_model)
 
     def stop_camera(self):
         self.stop()
@@ -128,7 +130,9 @@ class Camera(WebcamVideoStream):
                 print("detect_motion - No Motion Found") 
         print('detect_motion - No Images Found')
 
-    def detect_face(self):
+    def detect_face(self, classifier=None):
+        if classifier is None:
+            classifier = self.face_classifier
         biggest_face = None
         biggest_face_area = 0
         self.face_found = False
@@ -142,7 +146,7 @@ class Camera(WebcamVideoStream):
         if self.img is not None:
             gray = cv.cvtColor(self.img, cv.COLOR_BGR2GRAY)
             # Detect the faces
-            faces = self.face_classifier.detectMultiScale(gray, self.SCALE_FACTOR, self.MIN_NEIGHBORS)
+            faces = classifier.detectMultiScale(gray, self.SCALE_FACTOR, self.MIN_NEIGHBORS)
             # Draw the rectangle around each face
             if faces is not ():
                 for (x, y, w, h) in faces:
@@ -173,7 +177,7 @@ class FaceTracker():
     CAM_SRC = 0
 
     START_X = 0
-    START_Y = -30
+    START_Y = -25
     MAX_X = 60
     MAX_Y = 45
     MOVE_X = 2
@@ -259,6 +263,15 @@ class FaceTracker():
                 print(f"follow_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
             self.camera.face_lost = 0
         else:
+            self.camera.detect_face(self.camera.profile_classifier)
+            if self.camera.face_found:
+                if self.debug:
+                    print("follow_face - Found Face at px cx,cy (%i, %i) Area w%i x h%i = %i sq px" % (self.camera.face_center_x, self.camera.face_center_y, self.camera.face_width, self.camera.face_height, self.camera.face_area))
+                self.pan_to_pixel(self.camera.face_center_x, self.camera.face_center_y)
+                if self.debug:
+                    print(f"follow_face - Panned to ({self.gimbal.x}, {self.gimbal.y})")
+                self.camera.face_lost = 0
+
             print("follow_face - No Face Found, processing next image")
             self.camera.face_lost = self.camera.face_lost + 1
             if self.camera.face_lost >= self.camera.MAX_FACES_LOST:
