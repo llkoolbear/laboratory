@@ -173,7 +173,7 @@ class FaceTracker():
     CAM_SRC = 0
 
     START_X = 0
-    START_Y = 5
+    START_Y = -35
     MAX_X = 60
     MAX_Y = 45
     MOVE_X = 2
