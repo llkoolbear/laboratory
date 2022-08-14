@@ -118,12 +118,12 @@ class YoutubeWatcher:
 
     def watch_videos(self):
         for search_result in self.search_results:
-            self.select_video_from_search(search_result)
-            self.open_video()
-            self.watch_video()
-            self.like_video()
-            self.stop_video()
-            time.sleep(1)
+            if search_result['id']['kind'] == 'youtube#video': 
+                self.select_video_from_search(search_result)
+                self.open_video()
+                self.watch_video()
+                self.like_video()
+                self.stop_video()
 
     def stop_video(self):
         self.browser.quit()
