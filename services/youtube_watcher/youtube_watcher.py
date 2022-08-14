@@ -125,3 +125,13 @@ class YoutubeWatcher:
         self.browser.quit()
         print('Video watched')
             
+if __name__ == '__main__':
+    try:
+        youtube_watcher = YoutubeWatcher()
+        youtube_watcher.youtube_search('robot')
+        youtube_watcher.watch_videos()
+    except KeyboardInterrupt:
+        print("User Pressed Keyboard ctrl-c")
+    finally:
+        youtube_watcher.stop_video()
+        print("Stopped Watching Youtube")
