@@ -18,9 +18,13 @@ from googleapiclient.sample_tools import init
 from selenium import webdriver
 import time
 import isodate
+import os
 
-CLIENT_SECRETS_FILE = '/home/bearbissen/repos/youtube/api-samples/python/client_secret.json'
-CREDENTIALS_FILE = '/home/bearbissen/repos/youtube/api-samples/python/youtube.dat'
+CURRENT_FILE = os.path.abspath(__file__)
+CURRENT_DIR = os.path.dirname(CURRENT_FILE)
+CLIENT_SECRETS_FILE = os.path.join(CURRENT_DIR, 'client_secret.json')
+CREDENTIALS_FILE = os.path.join(CURRENT_DIR, 'youtube.dat')
+
 # This OAuth 2.0 access scope allows for full read/write access to the
 # authenticated user's account.
 SCOPES = ['https://www.googleapis.com/auth/youtube.force-ssl']
