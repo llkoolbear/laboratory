@@ -17,6 +17,8 @@
 from googleapiclient.sample_tools import init
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+
 
 import time
 import isodate
@@ -83,6 +85,7 @@ class YoutubeWatcher:
             id=self.video.videoId,
             rating=self.video.rating
         ).execute()
+        print('Video rated')
 
     class Video:
         def __init__(self, videoId = None, metadata = None):
@@ -108,19 +111,18 @@ class YoutubeWatcher:
         self.browser = webdriver.Chrome()
         self.browser.get('https://www.youtube.com/watch?v=' + self.video.videoId)
         print('Video opened')
-        try:
-            # hit play button key (k)
-            self.browser.find_element_by_tag_name('body').send_keys(Keys.K)
-        except Exception as e:
-            print(e)
-            self.stop_video()
-            return
+        self.play_pause_video()
+
+    def play_pause_video(self):
+        self.browser.find_element(By.TAG_NAME, 'body').send_keys("k")
 
     def watch_videos(self):
         for search_result in self.search_results:
             self.select_video_from_search(search_result)
             self.open_video()
             self.watch_video()
+            self.like_video()
+            self.stop_video()
             time.sleep(1)
 
     def stop_video(self):
@@ -136,8 +138,7 @@ class YoutubeWatcher:
             print('Time elapsed: ' + str(time_elapsed))
             time.sleep(1)
 
-        self.like_video()
-        self.browser.quit()
+        #self.play_pause_video()
         print('Video watched')
             
 if __name__ == '__main__':
