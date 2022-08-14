@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+## google api client secrets
+/services/youtube_watcher/client_secrets.json
+/services/youtube_watcher/youtube.dat
+
 # User-specific files
 *.rsuser
 *.suo
