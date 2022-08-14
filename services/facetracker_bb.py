@@ -172,6 +172,7 @@ class Camera(WebcamVideoStream):
             print('detect_face - No Images Found')
 class FaceTracker():
 
+    THREAD_NAME = 'FaceTracker'
     PAN_PIN = 17 #11
     TILT_PIN = 27 #13
     CAM_SRC = 0
@@ -193,6 +194,8 @@ class FaceTracker():
         self.window_on = True   # Set to True displays opencv windows (GUI desktop reqd)
         self.diff_window_on = False  # Show OpenCV image difference window
         self.thresh_window_on = False  # Show OpenCV image Threshold window
+        self.stopped = False     # Set to True to stop main loop
+
 
         self.heading_x = 0
         self.heading_y = 0
@@ -207,9 +210,17 @@ class FaceTracker():
         self.camera = Camera(self.CAM_SRC)
         self.camera.start()
 
+    def start(self):
+        print("start - Starting Face Tracker")
+        # start the thread to read frames from the video stream
+        t = Thread(target=self.track_face, name=self.THREAD_NAME, args=())
+        t.daemon = True
+        t.start()
+        return self
+
     def track_face(self):
 
-        while not self.camera.stopped:
+        while not self.stopped:
             self.camera.img = self.camera.read()
             if self.camera.img is not None:
                 if not self.camera.face_tracked:
@@ -314,12 +325,11 @@ class FaceTracker():
         
         self.gimbal.guide_to_position(head_x, head_y, self.SPEED)
 
-    def stop_track(self):
+    def stop(self):
+        self.stopped = True
         self.camera.stop_camera()
         self.gimbal.stop_gimbal()
         print("stop - Stopping")
-
-
 
 #-----------------------------------------------------------------------------------------------
 def face_track(gimbal, camera):
@@ -443,12 +453,9 @@ def face_track(gimbal, camera):
 if __name__ == '__main__':
     try:
         face_tracker = FaceTracker()
-        face_tracker.track_face()
+        face_tracker.start()
     except KeyboardInterrupt:
         print("User Pressed Keyboard ctrl-c")
     finally:
-        face_tracker.stop_track()
+        face_tracker.stop()
         print("Stopped Tracking")
-
-
-
