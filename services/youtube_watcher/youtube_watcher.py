@@ -16,6 +16,8 @@
 
 from googleapiclient.sample_tools import init
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+
 import time
 import isodate
 import os
@@ -105,6 +107,14 @@ class YoutubeWatcher:
     def open_video(self):
         self.browser = webdriver.Chrome()
         self.browser.get('https://www.youtube.com/watch?v=' + self.video.videoId)
+        print('Video opened')
+        try:
+            # hit play button key (k)
+            self.browser.find_element_by_tag_name('body').send_keys(Keys.K)
+        except Exception as e:
+            print(e)
+            self.stop_video()
+            return
 
     def watch_videos(self):
         for search_result in self.search_results:
