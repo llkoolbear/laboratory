@@ -20,13 +20,12 @@ from youtube_watcher.youtube_watcher import YoutubeWatcher
 if __name__ == '__main__':
     try:
         youtube_watcher = YoutubeWatcher()
-        face_tracker = FaceTracker()
-        face_tracker.track_face()
+        face_tracker = FaceTracker().start()
         youtube_watcher.youtube_search('robot')
         youtube_watcher.watch_videos()
     except KeyboardInterrupt:
         print("User Pressed Keyboard ctrl-c")
     finally:
-        face_tracker.stop_track()
+        face_tracker.stop()
         youtube_watcher.stop_video()
         print("Stopped Tracking")
