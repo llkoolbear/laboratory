@@ -96,7 +96,7 @@ class YoutubeWatcher:
 
     def select_video_from_search(self, search_result):
         videoId = search_result['id']['videoId']
-        self.video = self.Video(videoId,self.youtube.get_video_metadata(videoId, part = 'snippet,contentDetails'))
+        self.video = self.Video(videoId,self.youtube.videos().get_video_metadata(videoId, part = 'snippet,contentDetails'))
 
     def open_video(self):
         self.browser = webdriver.Chrome()
