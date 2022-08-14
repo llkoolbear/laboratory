@@ -51,7 +51,7 @@ class YoutubeWatcher:
         # query term.
         self.search_results = self.youtube.search().list(
             q=search_term,
-            part='id,snippet,contentDetails',
+            part='id,snippet',
             maxResults=max_results
         ).execute().get('items', [])
 
@@ -83,19 +83,20 @@ class YoutubeWatcher:
         ).execute()
 
     class Video:
-        def __init__(self, videoId = None, search_result = None):
+        def __init__(self, videoId = None):
             self.videoId = videoId
             self.description = None
             self.duration = None
             self.rating = 'none'
+            self.metadata = None
 
-            if search_result is not None:
-                self.videoId = search_result['id']['videoId']
-                self.description = search_result['snippet']['description']
-                self.duration = isodate.parse_duration(search_result['contentDetails']['duration']).seconds
+            if self.videoId is not None:
+                self.metadata = self.youtube.get_video_metadata(self.videoId, part = 'snippet,contentDetails')
+                self.description = self.metadata['snippet']['description']
+                self.duration = isodate.parse_duration(self.metadata['contentDetails']['duration']).seconds
 
-    def select_video(self, search_result):
-        self.video = self.Video(search_result=search_result)
+    def select_video_from_search(self, search_result):
+        self.video = self.Video(search_result['id']['videoId'])
 
     def open_video(self):
         self.browser = webdriver.Chrome()
@@ -103,7 +104,7 @@ class YoutubeWatcher:
 
     def watch_videos(self):
         for search_result in self.search_results:
-            self.select_video(search_result)
+            self.select_video_from_search(search_result)
             self.open_video()
             self.watch_video()
             time.sleep(1)
