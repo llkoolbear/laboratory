@@ -83,20 +83,20 @@ class YoutubeWatcher:
         ).execute()
 
     class Video:
-        def __init__(self, videoId = None):
+        def __init__(self, videoId = None, metadata = None):
             self.videoId = videoId
+            self.metadata = metadata
             self.description = None
             self.duration = None
             self.rating = 'none'
-            self.metadata = None
 
-            if self.videoId is not None:
-                self.metadata = self.youtube.get_video_metadata(self.videoId, part = 'snippet,contentDetails')
+            if self.metadata is not None:
                 self.description = self.metadata['snippet']['description']
                 self.duration = isodate.parse_duration(self.metadata['contentDetails']['duration']).seconds
 
     def select_video_from_search(self, search_result):
-        self.video = self.Video(search_result['id']['videoId'])
+        videoId = search_result['id']['videoId']
+        self.video = self.Video(videoId,self.youtube.get_video_metadata(videoId, part = 'snippet,contentDetails'))
 
     def open_video(self):
         self.browser = webdriver.Chrome()
